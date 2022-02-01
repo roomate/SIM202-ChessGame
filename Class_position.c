@@ -1,27 +1,81 @@
-class Position
-{public:
-    int joueur;
-    Position(int J) : joueur(J) {}
-    virtual double valeur_position() const =0;
-    Position* fille(joueur%2+1);
-    Position* soeur(joueur);
-    virtual ~delete(){};
-    virtual position& position_possible() = 0;
-    virtual void print_position(ostram& out) const = 0;
-};
+#include "position.hpp"
+#include <cmath>
 
-class Position_morpion : public Position
-{
-public:
-    grille G();
+//============================================
+//            class grille
+//============================================
 
-    int possession(int i, int j) const {return G.T[i*G.m+j]}
-    ~delete()
-    {
-        if (G != nullptr) delete[] G;
+
+grille::grille(){
+    T=new int(9)
+    for (int i = 0; i<9 ; i++){
+        T[i] = 0;
     }
+}
 
-    Position_morpion& position_possible()
+
+
+
+grille::grille(const grille & g){
+    T=new int(9)
+    for (int i = 0; i<9 ; i++){
+            T[i] = g.T[i];
+    }
+}
+
+
+ostream& grille::print_grille(ostream& out){
+    	for (int j=0; j<3; j++){
+            for (int i=0; i<3; i++){
+                if (T[i + 3*j]==0){
+                    cout<<".";
+                }
+                if (T[i + 3*j]==1){
+                    cout<<"X";
+                }
+                if (T[i + 3*j]==2){
+                    cout<<"0";
+                }
+            }
+            cout<<endl;
+        }
+        cout<<endl;
+
+}
+
+bool grille::a_gagne(int joueur){
+	for (int i = 0; i<3 ; ++i){
+		if (T[i]==joueur && T[i+1]==joueur && T[i+2]==joueur){
+			return true;
+		}
+		if (T[i]==joueur && T[i+3]==joueur && T[i+6]==joueur){
+			return true;
+		}
+	}
+	if (T[0]==joueur && T[4]==joueur && T[8]==joueur){
+		return true;
+	}
+	if (T[2]==joueur && T[4]==joueur && T[6]==joueur){
+		return true;
+	}
+	return false;
+}
+
+bool grille::grille_pleine(){
+	for (int i=0; i<9; i++){
+		if (T[i]==0){
+			return false;
+		}
+	}
+	return true;
+
+}
+
+//==========================================
+//            class Position_Morpion
+//==========================================
+
+Position_Morpion Position_Morpion&::position_possible()
     {
         Position_morpion** Tableau_soeurs = new Position_morpion*[9];
         Position_morpion* Pfille = Tableau_soeurs[0];
@@ -40,32 +94,5 @@ public:
         }
     return Pfille;
     }
-};
 
-class Grille
-{
-public:
-    int* T;
-    Grille(int m = 3, int n = 3,val = 0)
-    {
-        T = new int[m*n]
-        for (int i = 0; i<m*n;i++)
-            T[i] = val;
-    }
-    ostream& affiche_grille(ostream& out)
-    {
-        for (int j = 0; j<3; j++)
-            for (int i = 0; i<3; i++)
-        {
-            if (T[i+3*j] ==0)
-                return out<<".";
-        }
-            if (T[i+3*j] ==1)
-                return out<<"X";
-            if (T[i+3*j] ==2)
-            {
-                return out<<"O";
-            }
-    }
-    return out;
-};
+
