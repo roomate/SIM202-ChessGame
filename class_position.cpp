@@ -1,5 +1,5 @@
 
-#include "class_position.hpp"
+#include "classe_position.hpp"
 #include <cmath>
 
 const int MAX = 1000;
@@ -12,24 +12,23 @@ const int MIN = -1000;
 
 
 grille::grille(){
-    T=new int(9);
+    T=new int[9];
     for (int i = 0; i<9 ; i++){
         T[i] = 0;
     }
 }
 
 
-
-
 grille::grille(const grille & g){
-    T=new int(9);
+    T=new int[9];
     for (int i = 0; i<9 ; i++){
             T[i] = g.T[i];
     }
 }
 
 
-void grille::affichage(){
+void grille::affichage () const
+{
     	for (int j=0; j<3; j++){
             for (int i=0; i<3; i++){
                 if (T[i + 3*j]==0){
@@ -48,7 +47,8 @@ void grille::affichage(){
 
 }
 
-bool grille::a_gagne(int joueur){
+bool grille::a_gagne(int joueur) const
+{
 	for (int i = 0; i<3 ; ++i){
 		if (T[i]==joueur && T[i+1]==joueur && T[i+2]==joueur){
 			return true;
@@ -66,7 +66,7 @@ bool grille::a_gagne(int joueur){
 	return false;
 }
 
-bool grille::grille_pleine(){
+bool grille::grille_pleine() const {
 	for (int i=0; i<9; i++){
 		if (T[i]==0){
 			return false;
@@ -76,43 +76,52 @@ bool grille::grille_pleine(){
 
 }
 
+int& grille::operator[](int i)
+{
+    return (this)->T[i];
+}
+
+grille& grille::operator=(const grille& g)
+{
+    for (int i = 0; i<9; ++i)
+    {
+        this->T[i] = g.T[i];
+    }
+    return *this;
+}
+
 //==========================================
 //            class Position_Morpion
 //==========================================
 
 Position_Morpion& Position_Morpion::position_possible()
-    {
-        Position_Morpion** Tableau_soeurs = new Position_Morpion*[9];
-        Position_Morpion* Pfille = Tableau_soeurs[0];
-
-        int k = 0;
-
-        if (this->G.grille_pleine()){
-            this->fille = NULL;
-            cout<<"La grille est pleine"<<endl;
-            return *this;
-        }
-
-        for (int i = 0; i<9; i++)
-        {
-            if (this->G.T[i] == 0)
-            {
-                Tableau_soeurs[k]->joueur = this->joueur%2+1;
-                Tableau_soeurs[k]->G = this->G;
-                Tableau_soeurs[k]->G.T[i] = this->joueur;
-                k+=1;
-                Tableau_soeurs[k-1]->soeur = Tableau_soeurs[k];
-            }
-        }
-    this->fille = Pfille;
-    return *this;
+{
+    if (this->G.grille_pleine() == true){
+        this->fille = NULL;
+        cout<<"La grille est pleine"<<endl;
+        return *this;
     }
+    for (int i = 0; i<9; ++i)
+    {
+        if (this->G.T[i] == 0)
+        {
+            Position_Morpion* nouvelle_soeur = new Position_Morpion((this->joueur%2)+1);
+            nouvelle_soeur->G = this->G;
+            nouvelle_soeur->G[i] = this->joueur;
+            nouvelle_soeur->soeur = this->fille;
+            this->fille = nouvelle_soeur;
+        }
+    }
+    return *this;
+}
 
-bool Position_Morpion ::gagne(){
+bool Position_Morpion::gagne() const
+{
     return(this->G.a_gagne(this->joueur));
 }
 
-double Position_Morpion :: valeur_position() {
+double Position_Morpion :: valeur_position() const
+{
     if (this->G.a_gagne(this->joueur)){
         return 1000;
     }
@@ -133,7 +142,7 @@ double Position_Morpion :: valeur_position() {
 // Returns the optimal value a maximizer can obtain.
 
 // Profondeur en argument
-int minimax(Position &P, int alpha, int beta, bool maximizing, int depth )
+int minimax(Position &P, int alpha, int beta, int depth )
 {
    // position* pP=&P;
     P = P.position_possible();
@@ -145,21 +154,21 @@ int minimax(Position &P, int alpha, int beta, bool maximizing, int depth )
 	if (pFilles == NULL)
 		return P.valeur_position();
 
-    if (maximizing)
+    if (P.joueur == 1)
     {
         int best = MIN;
 
         //First child
     //    pP=P.fille;
 
-        int val = minimax(*pFilles, a, b, false, depth+1);
+        int val = minimax(*pFilles, a, b, depth+1);
         best = max(best, val);
         //  Recur for her sisters
 
         while (pFilles->soeur!=NULL)
         {   Position* pS=pFilles->soeur;
 
-            int val = minimax(*(pS), a, b, false, depth+1);
+            int val = minimax(*(pS), a, b, depth+1);
             best = max(best, val);
             delete pFilles;
             pFilles=pS;
@@ -179,13 +188,13 @@ int minimax(Position &P, int alpha, int beta, bool maximizing, int depth )
 
         //  first child
        // pP=P.fille;
-        int val = minimax(*pFilles, a, b, true, depth+1);
+        int val = minimax(*pFilles, a, b, depth+1);
         best = min(best, val);
         //  Recur for her sisters
 
         while (pFilles->soeur!=NULL)
         {   Position* pS=pFilles->soeur;
-            int val = minimax(*(pS), a, b, true, depth+1);
+            int val = minimax(*(pS), a, b, depth+1);
             best = min(best, val);
             delete pFilles;
             pFilles=pS;
