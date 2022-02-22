@@ -116,4 +116,4 @@ public:
 
 
 
-#endif // CLASS_PÖSITION_HPP
+#endif // CLASS_PÃ–SITION_HPP
