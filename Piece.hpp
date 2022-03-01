@@ -21,11 +21,11 @@ class type_piece{
 public:
   //  virtual void print() = 0;
     PieceType Nom_piece;
-    int** Dep_rel;
+    vector<vector<int>> Dep_rel;
     int valeur;
 
 };
-class Piece {
+class piece {
 public:
 
 	static const int valeur;
@@ -37,7 +37,7 @@ public:
 
 class pion: public type_piece {
 public:
-	pion(PieceColor color) {
+	pion() {
 		this->Nom_piece = P;
 		//int Tableau [][]
 	}
@@ -46,22 +46,13 @@ public:
 };
 class tour: public type_piece {
 public:
-	tour(PieceColor color) {
+	tour() {
 		this->Nom_piece = T;
 
-		int** Tableau= new int*[4];
-		Tableau[0][0] = 0;
-		Tableau[0][1] = 1;
-		Tableau[0][2] = 0;
-		Tableau[0][3] = -1;
-		Tableau[1][0] = 1;
-		Tableau[1][1] = 0;
-		Tableau[1][2] = -1;
-		Tableau[1][3] = 0;
-		Tableau[2][0] = 0;
-		Tableau[2][1] = 0;
-		Tableau[2][2] = 0;
-		Tableau[2][3] = 0;
+		vector<vector<int>> Tableau{ { 0, 1, 0, -1 },
+                                     { 1, 0, -1, 0 },
+                                     { 0, 0, 0, 0 } };
+
 		this->Dep_rel= Tableau;
 	}
 	static const int valeur = 500;
@@ -69,22 +60,28 @@ public:
 };
 class fou: public type_piece {
 public:
-	fou(PieceColor color) {
+	fou() {
 		this->Nom_piece = F;
-        int Tab[3][4]={1,1,-1,-1,1,-1,1,-1,0,0,0,0};
-		int** Tableau;
-		Tableau=Tab;
-		this->Dep_rel= Tableau;
+        vector<vector<int>> Tab{ { 1, 1, -1, -1 },
+                                 { 1, -1, 1, -1 },
+                                 { 0, 0, 0, 0 } };
+		this->Dep_rel= Tab;
 	}
 	static const  int valeur = 300;
 
 };
 class cavalier: public type_piece {
 public:
-	cavalier(PieceColor color) {
+	cavalier() {
 		this->Nom_piece = C;
 
-		int Tableau[3][8]={1,1,-1,-1,2,2,-2,-2,2,-2,2,-2,1,-1,1,-1,0,-1,0,1,-1,1,-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
+
+		vector<vector<int>> Tableau{{ 1, 1, -1, -1, 2, 2, -2, -2 },
+                                    { -2, 2, 2, -2, 1, -1, 1, -1},
+                                    { 1, 1, 1, 1, 1, 1, 1, 1 } };
+
+
+
 		this->Dep_rel= Tableau;
 	}
 	static const int valeur = 300;
@@ -93,10 +90,15 @@ public:
 };
 class dame: public type_piece {
 public:
-	dame(PieceColor color) {
+	dame() {
 		this->Nom_piece = D;
-		this->color = color;
-		int Tableau[3][8]={0,1,0,-1,1,1,-1,-1,1,0,-1,0,1,-1,1,-1,0,0,0,0,0,0,0,0};
+
+		vector<vector<int>> Tableau{{ 0, 1, 0, -1, 1, 1, -1, -1 },
+                                    { 1, 0, -1, 0, 1, -1, 1, -1},
+                                    { 0, 0, 0, 0, 0, 0, 0, 0 } };
+
+
+
 		this->Dep_rel= Tableau;
 	}
 	static const int valeur = 900;
@@ -104,11 +106,12 @@ public:
 };
 class roi: public type_piece {
 public:
-	roi(PieceColor color) {
+	roi() {
 		this->Nom_piece = R;
 
-		int Tableau[3][8]={0,1,0,-1,1,1,-1,-1,1,0,-1,0,1,-1,1,-1,1,1,1,1,1,1,1,1};
-		this->Dep_rel= Tableau;
+		vector<vector<int>> Tableau{{ 0, 1, 0, -1, 1, 1, -1, -1 },
+                                    { 1, 0, -1, 0, 1, -1, 1, -1},
+                                    { 1, 1, 1, 1, 1, 1, 1, 1 } };
 	}
 	static const int valeur = 0;
 
