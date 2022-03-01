@@ -145,64 +145,65 @@ echiquier construction_echequier(Position_Echec& P){
 
         }
         else if (P.Liste_coup[i].prom_f == true){
-                piece promotion;
+                piece* promotion = echiquier_final.plateau[P.Liste_coup[i].i1*8+P.Liste_coup[i].j1];
                 fou type_prom;
-                promotion.P = type_prom;
-                promotion.x = P.Liste_coup[i].i2;
-                promotion.y = P.Liste_coup[i].j2;
-                promotion.Couleur = P.Liste_coup[i].couleur_c;
+                promotion->P = type_prom;
+                promotion->x = P.Liste_coup[i].i2;
+                promotion->y = P.Liste_coup[i].j2;
                 echiquier_final.plateau[P.Liste_coup[i].i2*8+P.Liste_coup[i].j2] = promotion;
                 echiquier_final.plateau[P.Liste_coup[i].i1*8+P.Liste_coup[i].j1] = NULL;
 
         }
         else if (P.Liste_coup[i].prom_d == true){
-                piece promotion;
+                piece* promotion = echiquier_final.plateau[P.Liste_coup[i].i1*8+P.Liste_coup[i].j1];
                 dame type_prom;
-                promotion.P = type_prom;
-                promotion.x = P.Liste_coup[i].i2;
-                promotion.y = P.Liste_coup[i].j2;
-                promotion.Couleur = P.Liste_coup[i].couleur_c;
+                promotion->P = type_prom;
+                promotion->x = P.Liste_coup[i].i2;
+                promotion->y = P.Liste_coup[i].j2;
                 echiquier_final.plateau[P.Liste_coup[i].i2*8+P.Liste_coup[i].j2] = promotion;
                 echiquier_final.plateau[P.Liste_coup[i].i1*8+P.Liste_coup[i].j1] = NULL;
 
         }
         else if (P.Liste_coup[i].prom_t == true){
-                piece promotion;
+                piece* promotion = echiquier_final.plateau[P.Liste_coup[i].i1*8+P.Liste_coup[i].j1];
                 tour type_prom;
-                promotion.P = type_prom;
-                promotion.x = P.Liste_coup[i].i2;
-                promotion.y = P.Liste_coup[i].j2;
-                promotion.Couleur = P.Liste_coup[i].couleur_c;
+                promotion->P = type_prom;
+                promotion->x = P.Liste_coup[i].i2;
+                promotion->y = P.Liste_coup[i].j2;
                 echiquier_final.plateau[P.Liste_coup[i].i2*8+P.Liste_coup[i].j2] = promotion;
                 echiquier_final.plateau[P.Liste_coup[i].i1*8+P.Liste_coup[i].j1] = NULL;
 
         }
         else if (P.Liste_coup[i].prom_c == true){
-                piece promotion;
+                piece* promotion = echiquier_final.plateau[P.Liste_coup[i].i1*8+P.Liste_coup[i].j1];
                 cavalier type_prom;
-                promotion.P = type_prom;
-                promotion.x = P.Liste_coup[i].i2;
-                promotion.y = P.Liste_coup[i].j2;
-                promotion.Couleur = P.Liste_coup[i].couleur_c;
+                promotion->P = type_prom;
+                promotion->x = P.Liste_coup[i].i2;
+                promotion->y = P.Liste_coup[i].j2;
                 echiquier_final.plateau[P.Liste_coup[i].i2*8+P.Liste_coup[i].j2] = promotion;
                 echiquier_final.plateau[P.Liste_coup[i].i1*8+P.Liste_coup[i].j1] = NULL;
 
         }
         else {
-            echiquier_final.plateau[P.Liste_coup[i].i2*8+P.Liste_coup[i].j2] = echiquier_final.plateau[P.Liste_coup[i].i1*8+P.Liste_coup[i].j1]; //Nécessité d'un constructeur par copie ?
-            echiquier_final.plateau[P.Liste_coup[i].i2*8+P.Liste_coup[i].j2].x = i2;
-            echiquier_final.plateau[P.Liste_coup[i].i2*8+P.Liste_coup[i].j2].y = j2;
-            echiquier_final.plateau[P.Liste_coup[i].i1*8+P.Liste_coup[i].j1] = NULL;
+                piece* temp = echiquier_final.plateau[P.Liste_coup[i].i1*8+P.Liste_coup[i].j1];
+                temp->x = P.Liste_coup[i].i2;
+                temp->y = P.Liste_coup[i].j2;
+                echiquier_final.plateau[P.Liste_coup[i].i2*8+P.Liste_coup[i].j2] = temp;
+                echiquier_final.plateau[P.Liste_coup[i].i1*8+P.Liste_coup[i].j1] = NULL;
         }
     }
     return(echiquier_final);
+}
+
+double Position_Echec::valeur_position(){
+
 }
 
 bool Position_Echec::test_echec(){
     echiquier echiquier_final = construction_echequier(*this);
     int pos_x_roi;
     int pos_y_roi;
-    for(int i = 0, i<64;i++){
+    for(int i = 0; i<64;i++){
         if (echiquier_final.plateau[i].P.Nom_piece = "R" && echiquier_final.plateau[i].Couleur = couleur_joueur){
             pos_x_roi = echiquier_final.plateau[i].x;
             pos_y_roi = echiquier_final.plateau[i].y;
