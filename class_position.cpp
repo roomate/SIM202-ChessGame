@@ -1,7 +1,3 @@
-
-#ifndef CLASS_POSITION_HPP
-#define CLASS_POSITION_HPP
-
 #include <iostream>
 #include <cmath>
 using namespace std;
