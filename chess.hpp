@@ -121,6 +121,7 @@ public:
     PieceColor Couleur;
     int x;
     int y;
+    bool a_bouger;
 
 };
 
