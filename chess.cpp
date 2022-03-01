@@ -6,6 +6,9 @@
 const int alpha = 1;
 const int beta = 1;
 
+const int MAX = 1000;
+const int MIN = -1000;
+
 //====================================
 
 void echiquier::affichage(){
@@ -48,14 +51,6 @@ void coup_echec::affichage_standard(){
         cout<<"Tour"<<alphat[i2]<<j2+1;
     }
     else {
-        enum PieceType Roi = R;
-        enum PieceType Dame = D;
-        enum PieceType Fou = F;
-        enum PieceType Cavalier = C;
-        enum PieceType Pion = P;
-        enum PieceType Tour = T;
-        enum PieceColor Blanc = b;
-        enum PieceColor Noir = n;
         if (PJ.P.Nom_piece == Roi){
             cout<<"Roi";
         }
@@ -102,8 +97,6 @@ void coup_echec::affichage_standard(){
 echiquier construction_echiquier(Position_Echec& P){
     int N = sizeof(P.Liste_coup);
     echiquier echiquier_final = P.echiquier_ref; //Il faut un constructeur par copie ?
-    enum PieceColor Blanc = b;
-    enum PieceColor Noir = n;
     for (int i = 0;i<N;i++){
         if (P.Liste_coup[i].p_rooc== true){
             if (P.Liste_coup[i].couleur_c == Blanc){
@@ -207,8 +200,7 @@ Position_Echec& Position_Echec::mise_a_jour_position(){ //Met à jour l'echiquie
     int N = sizeof(this->Liste_coup);
     this->Dernier_coup = this->Liste_coup[N-1]; //Recup du dernier coup
 
-    enum PieceColor Blanc = b; //Mise à jour de la couleur du joueur qui doit jouer
-    enum PieceColor Noir = n;
+
     enum PieceColor Dernier_joueur = this->Liste_coup[N-1].couleur_c;
     if (Dernier_joueur = Blanc){
         this->couleur_joueur = Noir;
@@ -225,42 +217,39 @@ Position_Echec& Position_Echec::mise_a_jour_position(){ //Met à jour l'echiquie
     return *this;
 }
 
+
 double Position_Echec::valeur_position(){
     this->mise_a_jour_position();
-    echiquier echiquier_final = this->echiquier_ref;
-
+    echiquier echiquier_final = construction_echiquier(*this);
     int cont_blanc = 0;
     int cont_noir = 0;
     int val_blanc = 0;
     int val_noir = 0;
-    enum PieceColor Blanc = b;
-    enum PieceColor Noir = n;
     int val;
-
-
-    // attention il faut rajouter ici les cas d'echec
-
-    for(int i = 0; i<64;i++){
-        if (echiquier_final[i] != NULL)
-            if (echiquier_final[i]->Couleur = b){
-                cont_blanc = cont_blanc +1;
-                val_blanc = val_blanc + echiquier_final[i]->P.valeur;
-            } else if (echiquier_final[i]->Couleur = n){
-                cont_noir = cont_noir +1
-                val_noir = val_noir + echiquier_final[i]->P.valeur;
-            }
-    }
-    if (this->couleur_joueur = Blanc){
-        val =
-        return val;
-    }else if (this->couleur_joueur = Noir){
-        val =
+    if (this->test_echec_mat()==true){
+        return MAX;
+    } else if (this->test_match_nul()==true) {
+        return 0;
+    } else {
+        for(int i = 0; i<64;i++){
+            if (echiquier_final.plateau[i] != NULL)
+                if (echiquier_final.plateau[i]->Couleur = Blanc){
+                    cont_blanc = cont_blanc +1;
+                    val_blanc = val_blanc + echiquier_final.plateau[i]->P.valeur;
+                } else if (echiquier_final.plateau[i]->Couleur = Noir){
+                    cont_noir = cont_noir +1;
+                    val_noir = val_noir + echiquier_final.plateau[i]->P.valeur;
+                }
+        }
+        val = alpha *(val_blanc - val_noir) + beta*(cont_blanc - cont_noir);
         return val;
     }
 }
 
+
+
 bool Position_Echec::test_echec(){
-    echiquier echiquier_final = construction_echequier(*this);
+    echiquier echiquier_final = construction_echiquier(*this);
     int pos_x_roi;
     int pos_y_roi;
     for(int i = 0; i<64;i++){
