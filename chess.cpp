@@ -1,6 +1,13 @@
 #include "chess.hpp"
 #include <cmath>
 
+//====================================
+
+const int alpha = 1;
+const int beta = 1;
+
+//====================================
+
 void echiquier::affichage(){
     for (int i = 0; i<8; i++){
         for (int j=0; j<8; j++){
@@ -92,7 +99,7 @@ void coup_echec::affichage_standard(){
 //======================================
 
 
-echiquier construction_echequier(Position_Echec& P){
+echiquier construction_echiquier(Position_Echec& P){
     int N = sizeof(P.Liste_coup);
     echiquier echiquier_final = P.echiquier_ref; //Il faut un constructeur par copie ?
     enum PieceColor Blanc = b;
@@ -195,8 +202,61 @@ echiquier construction_echequier(Position_Echec& P){
     return(echiquier_final);
 }
 
-double Position_Echec::valeur_position(){
 
+Position_Echec& Position_Echec::mise_a_jour_position(){ //Met à jour l'echiquier de ref, vide la liste de coup, et determine le joueur à qui c'est au tour de jouer
+    int N = sizeof(this->Liste_coup);
+    this->Dernier_coup = this->Liste_coup[N-1]; //Recup du dernier coup
+
+    enum PieceColor Blanc = b; //Mise à jour de la couleur du joueur qui doit jouer
+    enum PieceColor Noir = n;
+    enum PieceColor Dernier_joueur = this->Liste_coup[N-1].couleur_c;
+    if (Dernier_joueur = Blanc){
+        this->couleur_joueur = Noir;
+    }
+    if (Dernier_joueur = Noir){
+        this->couleur_joueur = Blanc;
+    }
+
+    echiquier echiquier_final = construction_echiquier(*this); //Mise à jour de l'echiquier
+    echiquier_ref = echiquier_final;
+
+    delete Liste_coup;
+
+    return *this;
+}
+
+double Position_Echec::valeur_position(){
+    this->mise_a_jour_position();
+    echiquier echiquier_final = this->echiquier_ref;
+
+    int cont_blanc = 0;
+    int cont_noir = 0;
+    int val_blanc = 0;
+    int val_noir = 0;
+    enum PieceColor Blanc = b;
+    enum PieceColor Noir = n;
+    int val;
+
+
+    // attention il faut rajouter ici les cas d'echec
+
+    for(int i = 0; i<64;i++){
+        if (echiquier_final[i] != NULL)
+            if (echiquier_final[i]->Couleur = b){
+                cont_blanc = cont_blanc +1;
+                val_blanc = val_blanc + echiquier_final[i]->P.valeur;
+            } else if (echiquier_final[i]->Couleur = n){
+                cont_noir = cont_noir +1
+                val_noir = val_noir + echiquier_final[i]->P.valeur;
+            }
+    }
+    if (this->couleur_joueur = Blanc){
+        val =
+        return val;
+    }else if (this->couleur_joueur = Noir){
+        val =
+        return val;
+    }
 }
 
 bool Position_Echec::test_echec(){
