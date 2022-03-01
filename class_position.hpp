@@ -69,3 +69,36 @@ public:
 int minimax(Position &P, int alpha, int beta, int depth);
 
 #endif // CLASS_POSITION_HPP
+
+class Position_Morpion : public Position
+{
+public:
+    grille G;
+    int possession(int i, int j) const {return G.T[i*3+j];}
+    Position_Morpion(int J) : Position(J) {init();}
+    void init() {grille G();}
+    Position_Morpion& position_possible();
+    bool gagne() const ;
+    double valeur_position() const ;
+    ~Position_Morpion()
+    {
+
+        if (this->fille != nullptr)
+        {
+            delete this->fille;
+            this->fille = nullptr;
+        }
+        if (this->soeur != nullptr)
+        {
+           delete this->soeur;
+           this->soeur = nullptr;
+        }
+    }
+    void print_position() const {G.affichage();}
+    bool pleine() const {return G.grille_pleine();}
+};
+
+
+int minimax(Position &P, int alpha, int beta, int depth);
+
+#endif // CLASS_POSITION_HPP
