@@ -29,7 +29,10 @@ public:
 	pion() {
 		this->Nom_piece = P;
 		this->valeur = 100;
-		//int Tableau [][]
+		vector<vector<int>> Tableau {{0, 1, -1, 0},
+                                           {1, 1, 1, 2 },
+                                          {1, 1, 1, 1 }};
+                this->Dep_rel= Tableau;
 	}
 
 
