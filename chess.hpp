@@ -127,7 +127,11 @@ public:
 
 class echiquier{
 public:
-    piece plateau[64];
+    vector<piece*> plateau;
+    //piece plateau[64];
+    echiquier(){
+        plateau.resize(64,NULL);
+    }
     void affichage();
 
     };
@@ -157,12 +161,15 @@ class Position_Echec: public Position {
 public:
     //std::list<coup_echec> Liste_coup;
     PieceColor couleur_joueur; //Couleur du joueur à qui c'est au tour de jouer
+    coup_echec Dernier_coup;
     coup_echec* Liste_coup;
     echiquier echiquier_ref;
+
     Position_Echec& position_possible();
     double valeur_position() ;
     bool test_echec();
     bool test_echec_mat();
+    Position_Echec& mise_a_jour_position();
 
 
 } ;
