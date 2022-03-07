@@ -1,205 +1,86 @@
+#include <iostream>
 #include "classe_position.hpp"
-#include <cmath>
 
-const int MAX = 1000;
-const int MIN = -1000;
+using namespace std;
 
-
-//============================================
-//            class grille
-//============================================
-
-
-grille::grille(){
-    T=new int[9];
-    for (int i = 0; i<9 ; i++){
-        T[i] = 0;
-    }
-}
-
-
-grille::grille(const grille & g){
-    T=new int[9];
-    for (int i = 0; i<9 ; i++){
-            T[i] = g.T[i];
-    }
-}
-
-
-void grille::affichage () const
+int main()
 {
-    	for (int j=0; j<3; j++){
-            for (int i=0; i<3; i++){
-                if (T[i + 3*j]==0){
-                    cout<<".";
-                }
-                if (T[i + 3*j]==1){
-                    cout<<"X";
-                }
-                if (T[i + 3*j]==2){
-                    cout<<"0";
+    Position_Morpion Q(1);
+    Position_Morpion& P = Q;
+    bool victoire_joueur = false; //Il joue les 1
+    bool victoire_ordi = false; //Il joue les 2
+    int x;
+    int minimaxi;
+    int n = 0;
+    bool nul = false;
+    while (victoire_joueur == false && victoire_ordi == false && nul == false)
+    {
+        P.G.affichage();
+        cout<<" c'est au tour du joueur "<<P.joueur<<" de jouer"<<endl;
+        if (P.joueur == 1)
+        {
+            cout<<"Joue ton coup"<<endl;
+            cin>>x;
+            while (P.G.T[x-1] != 0)
+            {
+                cout<<"Refaire le coup, zone deja prise.";
+                cin>>x;
+            }
+            P.G.T[x-1] = 1;
+            victoire_joueur = P.gagne();
+            P.joueur = 2;
+            if (P.pleine()) {nul = true;}
+        }
+        else
+        {
+            minimaxi = minimax(P,0,0,n+1);
+            if (P.fille == nullptr)
+            {
+                nul = true;
+            }
+            else {
+                Position *fille = P.fille;
+                while (fille != nullptr)
+                {
+                    if (fille->min_max_results == minimaxi)
+                    {
+                        P = dynamic_cast<Position_Morpion&>(*fille);
+                    }
+                    fille = fille->soeur;
                 }
             }
-            cout<<endl;
         }
-        cout<<endl;
-
-}
-
-bool grille::a_gagne(int joueur) const
-{
-	for (int i = 0; i<3 ; ++i){
-		if (T[i]==joueur && T[i+1]==joueur && T[i+2]==joueur){
-			return true;
-		}
-		if (T[i]==joueur && T[i+3]==joueur && T[i+6]==joueur){
-			return true;
-		}
-	}
-	if (T[0]==joueur && T[4]==joueur && T[8]==joueur){
-		return true;
-	}
-	if (T[2]==joueur && T[4]==joueur && T[6]==joueur){
-		return true;
-	}
-	return false;
-}
-
-bool grille::grille_pleine() const {
-	for (int i=0; i<9; i++){
-		if (T[i]==0){
-			return false;
-		}
-	}
-	return true;
-
-}
-
-int& grille::operator[](int i)
-{
-    return (this)->T[i];
-}
-
-grille& grille::operator=(const grille& g)
-{
-    for (int i = 0; i<9; ++i)
+        victoire_ordi = P.gagne();
+        ++n;
+    }
+    if (victoire_joueur == true)
     {
-        this->T[i] = g.T[i];
+        cout<<"Vous avez gagne"<<endl;
     }
-    return *this;
-}
-
-//==========================================
-//            class Position_Morpion
-//==========================================
-
-Position_Morpion& Position_Morpion::position_possible()
-{
-    if (this->pleine() == true){
-        this->fille = NULL;
-        return *this;
-    }
-    for (int i = 0; i<9; ++i)
+    if (victoire_ordi == true)
     {
-        if (this->G.T[i] == 0)
-        {
-            Position_Morpion* nouvelle_soeur = new Position_Morpion((this->joueur%2)+1);
-            nouvelle_soeur->G = this->G;
-            nouvelle_soeur->G[i] = this->joueur;
-            nouvelle_soeur->soeur = this->fille;
-            this->fille = nouvelle_soeur;
-        }
+        cout<<"L'ordinateur a gagne"<<endl;
     }
-    return *this;
-}
-
-bool Position_Morpion::gagne() const
-{
-    return(this->G.a_gagne(this->joueur));
-}
-
-double Position_Morpion :: valeur_position() const
-{
-    if (this->G.a_gagne(this->joueur)){
-        return 1000;
-    }
-    if (this->G.a_gagne(this->joueur%2+1)){
-        return -1000;
-    }
-    else{
-        return 0;
-    }
-}
-
-
-
-//==========================================
-//            Fonction Minmax
-//==========================================
-
-// Returns the optimal value a maximizer can obtain.
-
-// Profondeur en argument
-int minimax(Position &P, int alpha, int beta, int depth)
-{
-   // position* pP=&P;
-    P.position_possible();
-    Position* pFilles= P.fille;
-    int a = alpha ;
-    int b = beta;
-	// Terminating condition. i.e
-	// leaf node is reached
-	if (pFilles == nullptr)
-		return P.valeur_position();
-
-    if (P.joueur == 2)
+    if (nul == true && victoire_ordi == false && victoire_joueur == false)
     {
-        int best = MIN;
-
-        //First child
-    //    pP=P.fille;
-
-        int val = minimax(*pFilles, a, b, depth+1);
-        pFilles->min_max_results = val;
-        best = max(best, val);
-        //  Recur for her sisters
-
-        while (pFilles->soeur!=NULL)
-        {   Position* pS=pFilles->soeur;
-            int val = minimax(*(pS), a, b, depth+1);
-            pS->min_max_results = val;
-            best = max(best, val);
-            pFilles=pS;
-      //      alpha = max(alpha, best);
-
-    /*        // Alpha Beta Pruning
-            if (beta <= alpha)
-                break;              */
-        }
-        return best;
+        cout<<"Le match est nul"<<endl;
     }
-    else
-    {
-        int best = MAX;
 
-        //  first child
-       // pP=P.fille;
-        int val = minimax(*pFilles, a, b, depth+1);
-        pFilles->min_max_results = val;
-        best = min(best, val);
-        //  Recur for her sisters
+//    Position_Morpion P(2);
+//    P.G[0] = 0;
+//    P.G[1] = 0;
+//    P.G[2] = 0;
+//    P.G[3] = 0;
+//    P.G[4] = 0;
+//    P.G[5] = 0;
+//    P.G[6] = 0;
+//    P.G[7] = 0;
+//    P.G[8] = 0;
+//    P.position_possible();
+//    Position_Morpion &A = dynamic_cast<Position_Morpion&>(*P.fille);
+//    A.position_possible();
+//    A.fille->print_position();
 
-        while (pFilles->soeur!=NULL)
-        {   Position* pS=pFilles->soeur;
-            int val = minimax(*(pS), a, b, depth+1);
-            pS->min_max_results = val;
-            best = min(best, val);
-            pFilles=pS;
-    //        beta = min(alpha, best);
-      /*      // Alpha Beta Pruning
-            if (beta <= alpha)
-                break;              */
-        }
-        return best;
-    }
+
+    return 0;
 }
