@@ -95,9 +95,8 @@ grille& grille::operator=(const grille& g)
 
 Position_Morpion& Position_Morpion::position_possible()
 {
-    if (this->G.grille_pleine() == true){
+    if (this->pleine() == true){
         this->fille = NULL;
-        cout<<"La grille est pleine"<<endl;
         return *this;
     }
     for (int i = 0; i<9; ++i)
@@ -141,18 +140,19 @@ double Position_Morpion :: valeur_position() const
 // Returns the optimal value a maximizer can obtain.
 
 // Profondeur en argument
-int minimax(Position &P, int alpha, int beta, int depth )
+int minimax(Position &P, int alpha, int beta, int depth)
 {
    // position* pP=&P;
+    P.position_possible();
     Position* pFilles= P.fille;
     int a = alpha ;
     int b = beta;
 	// Terminating condition. i.e
 	// leaf node is reached
-	if (pFilles == NULL)
+	if (pFilles == nullptr)
 		return P.valeur_position();
 
-    if (P.joueur == 1)
+    if (P.joueur == 2)
     {
         int best = MIN;
 
@@ -160,15 +160,15 @@ int minimax(Position &P, int alpha, int beta, int depth )
     //    pP=P.fille;
 
         int val = minimax(*pFilles, a, b, depth+1);
+        pFilles->min_max_results = val;
         best = max(best, val);
         //  Recur for her sisters
 
         while (pFilles->soeur!=NULL)
         {   Position* pS=pFilles->soeur;
-
             int val = minimax(*(pS), a, b, depth+1);
+            pS->min_max_results = val;
             best = max(best, val);
-            delete pFilles;
             pFilles=pS;
       //      alpha = max(alpha, best);
 
@@ -176,8 +176,6 @@ int minimax(Position &P, int alpha, int beta, int depth )
             if (beta <= alpha)
                 break;              */
         }
-
-        delete pFilles;
         return best;
     }
     else
@@ -187,21 +185,21 @@ int minimax(Position &P, int alpha, int beta, int depth )
         //  first child
        // pP=P.fille;
         int val = minimax(*pFilles, a, b, depth+1);
+        pFilles->min_max_results = val;
         best = min(best, val);
         //  Recur for her sisters
 
         while (pFilles->soeur!=NULL)
         {   Position* pS=pFilles->soeur;
             int val = minimax(*(pS), a, b, depth+1);
+            pS->min_max_results = val;
             best = min(best, val);
-            delete pFilles;
             pFilles=pS;
     //        beta = min(alpha, best);
       /*      // Alpha Beta Pruning
             if (beta <= alpha)
                 break;              */
         }
-        delete pFilles;
         return best;
     }
 }
