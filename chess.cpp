@@ -211,7 +211,7 @@ Position_Echec& Position_Echec::mise_a_jour_position(){ //Met à jour l'echiquie
     }
 
     echiquier_ref = construction_echiquier(*this); //Mise à jour de l'echiquier
-    
+
 
     delete[] Liste_coup;
 
