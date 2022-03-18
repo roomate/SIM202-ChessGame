@@ -12,10 +12,11 @@ const int MIN = -1000;
 //====================================
 
 void echiquier::affichage(){
-    for (int i = 0; i<8; i++){
+
+    for (int i = 7; i>=0; i--){
         for (int j=0; j<8; j++){
             if (plateau[i*8+j] != NULL){
-                cout<<plateau[i*8+j]->P.Nom_piece<<plateau[i*8+j]->Couleur<<"  ";
+                cout<<plateau[i*8+j]->string_type()<<(plateau[i*8+j]->Couleur==Blanc?"b":"n")<<"  ";
             }else{
                 cout<<"    ";
             }
@@ -51,31 +52,31 @@ void coup_echec::affichage_standard(){
         cout<<"Tour"<<alphat[i2]<<j2+1;
     }
     else {
-        if (PJ.P.Nom_piece == Roi){
+        if (PJ->P.Nom_piece == Roi){
             cout<<"Roi";
         }
-        if (PJ.P.Nom_piece == Dame){
+        if (PJ->P.Nom_piece == Dame){
             cout<<"Dame";
         }
-        if (PJ.P.Nom_piece == Fou){
+        if (PJ->P.Nom_piece == Fou){
             cout<<"Fou";
         }
-        if (PJ.P.Nom_piece == Cavalier){
+        if (PJ->P.Nom_piece == Cavalier){
             cout<<"Cavalier";
         }
-        if (PJ.P.Nom_piece == Tour){
+        if (PJ->P.Nom_piece == Tour){
             cout<<"Tour";
         }
-        if (PJ.P.Nom_piece == Pion){
+        if (PJ->P.Nom_piece == Pion){
             cout<<"Pion";
         }
-        if (PJ.Couleur == Blanc){
+        if (PJ->Couleur == Blanc){
             cout<<" Blanc";
         }
-        if (PJ.Couleur == Noir){
+        if (PJ->Couleur == Noir){
             cout<<" Noir";
         }
-        cout<<alphat[j1]<<i1+1;
+        cout<<" "<<alphat[j1]<<i1+1;
         cout<<"-";
         cout<<alphat[j2]<<i2+1;
 
@@ -86,7 +87,7 @@ void coup_echec::affichage_standard(){
     if (echec_mat == true){
         cout<<"++";
     }
-    cout<<")";
+    cout<<")"<<endl;
 }
 
 //======================================
@@ -209,14 +210,15 @@ Position_Echec& Position_Echec::mise_a_jour_position(){ //Met à jour l'echiquie
         this->couleur_joueur = Blanc;
     }
 
-    echiquier echiquier_final = construction_echiquier(*this); //Mise à jour de l'echiquier
-    echiquier_ref = echiquier_final;
+    echiquier_ref = construction_echiquier(*this); //Mise à jour de l'echiquier
+    
 
-    delete Liste_coup;
+    delete[] Liste_coup;
 
     return *this;
 }
 
+/* Mise en commentaire en attendant d'avoir créer test echec
 
 double Position_Echec::valeur_position(){
     this->mise_a_jour_position();
@@ -246,8 +248,54 @@ double Position_Echec::valeur_position(){
     }
 }
 
+*/
 
+echiquier echiquier_depart(){
+    echiquier E;
+    piece* P_0 = new piece(Tour,Blanc,0,0);
+    E.plateau[0]= P_0;
+    piece* P_1 = new piece(Cavalier,Blanc,0,1);
+    E.plateau[1]= P_1;
+    piece* P_2= new piece(Fou,Blanc,0,2);
+    E.plateau[2]= P_2;
+    piece* P_3= new piece(Dame,Blanc,0,3);
+    E.plateau[3]= P_3;
+    piece* P_4= new piece(Roi,Blanc,0,4);
+    E.plateau[4]= P_4;
+    piece* P_5= new piece(Fou,Blanc,0,5);
+    E.plateau[5]= P_5;
+    piece* P_6= new piece(Cavalier,Blanc,0,6);
+    E.plateau[6]= P_6;
+    piece* P_7= new piece(Tour,Blanc,0,7);
+    E.plateau[7]= P_7;
+    for (int i = 0; i<=7; i++){
+        piece* temp_P= new piece(Pion,Blanc,1,i);
+        E.plateau[8+i] = temp_P;
+    }
+    piece* P_56 = new piece(Tour,Noir,7,0);
+    E.plateau[56]= P_56;
+    piece* P_57 = new piece(Cavalier,Noir,7,1);
+    E.plateau[57]= P_57;
+    piece* P_58 = new piece(Fou,Noir,7,2);
+    E.plateau[58]= P_58;
+    piece* P_59= new piece(Dame,Noir,7,3);
+    E.plateau[59]= P_59;
+    piece* P_60= new piece(Roi,Noir,7,4);
+    E.plateau[60]= P_60;
+    piece* P_61= new piece(Fou,Noir,7,5);
+    E.plateau[61]= P_61;
+    piece* P_62= new piece(Cavalier,Noir,7,6);
+    E.plateau[62]= P_62;
+    piece* P_63= new piece(Tour,Noir,7,7);
+    E.plateau[63]= P_63;
+    for (int i = 0; i<=7; i++){
+        piece* temp_P= new piece(Pion,Noir,6,i);
+        E.plateau[6*8+i] = temp_P;
+    }
+    return E;
+}
 
+/* A FAIRE
 bool Position_Echec::test_echec(){
     echiquier echiquier_final = construction_echiquier(*this);
     int pos_x_roi;
@@ -260,5 +308,6 @@ bool Position_Echec::test_echec(){
     }
 
 }
+*/
 
 
