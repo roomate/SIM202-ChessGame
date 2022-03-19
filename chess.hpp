@@ -335,7 +335,7 @@ public:
         couleur_c = piece_jouee->Couleur;
 
     }
-    coup_echec(piece* piece_jouee,piece* piece_prise,int x_init, int y_init, int x_final, int y_final){ // Coup correspondant à un déplacement
+    coup_echec(piece* piece_jouee,piece* piece_prise,int x_init, int y_init, int x_final, int y_final){ // Coup correspondant à une prise de pièce
         if (piece_jouee!=nullptr){
             piece* p_temp = new piece(piece_jouee->P.Nom_piece,piece_jouee->Couleur,piece_jouee->x,piece_jouee->y);
             PJ = p_temp;
@@ -357,7 +357,7 @@ public:
         couleur_c = piece_jouee->Couleur;
 
     }
-    coup_echec(char* nom_coup,PieceColor couleur){ //à modifier : mettre à jour pièce prise/joué +position
+    coup_echec(char* nom_coup,PieceColor couleur){ //onstructeur pour les roocs
         couleur_c = couleur;
         p_rooc = false;
         g_rooc = false;
@@ -367,11 +367,57 @@ public:
         prom_t = false;
         if (nom_coup == "p_rooc"){p_rooc = true;}
         if (nom_coup == "g_rooc"){g_rooc = true;}
-        if (nom_coup == "prom_f"){prom_f = true;}
-        if (nom_coup == "prom_d"){prom_d = true;}
-        if (nom_coup == "prom_c"){prom_c = true;}
-        if (nom_coup == "prom_t"){prom_t = true;}
 
+
+    }
+    coup_echec(char* nom_coup,piece* piece_jouee,int x_init, int y_init, int x_final, int y_final){ //Constructeur pour les promotions
+    if (piece_jouee!=nullptr){
+        piece* p_temp = new piece(piece_jouee->P.Nom_piece,piece_jouee->Couleur,piece_jouee->x,piece_jouee->y);
+        PJ = p_temp;
+    }
+    couleur_c = piece_jouee->Couleur;
+    p_rooc = false;
+    g_rooc = false;
+    prom_f = false;
+    prom_d = false;
+    prom_c = false;
+    prom_t = false;
+    if (nom_coup == "prom_f"){prom_f = true;}
+    if (nom_coup == "prom_d"){prom_d = true;}
+    if (nom_coup == "prom_c"){prom_c = true;}
+    if (nom_coup == "prom_t"){prom_t = true;}
+    i1 = x_init;
+    i2 = x_final;
+    j2 = y_final;
+    j1 = y_init;
+    couleur_c = piece_jouee->Couleur;
+    }
+
+    coup_echec(char* nom_coup,piece* piece_jouee,piece* piece_prise,int x_init, int y_init, int x_final, int y_final){ //Constructeur pour les promotions avec prise
+    if (piece_jouee!=nullptr){
+        piece* p_temp = new piece(piece_jouee->P.Nom_piece,piece_jouee->Couleur,piece_jouee->x,piece_jouee->y);
+        PJ = p_temp;
+    }
+    if (piece_prise!=nullptr){
+        piece* pprise_temp = new piece(piece_prise->P.Nom_piece,piece_prise->Couleur,piece_prise->x,piece_prise->y);
+        Pprise = pprise_temp;
+    }
+    couleur_c = piece_jouee->Couleur;
+    p_rooc = false;
+    g_rooc = false;
+    prom_f = false;
+    prom_d = false;
+    prom_c = false;
+    prom_t = false;
+    if (nom_coup == "prom_f"){prom_f = true;}
+    if (nom_coup == "prom_d"){prom_d = true;}
+    if (nom_coup == "prom_c"){prom_c = true;}
+    if (nom_coup == "prom_t"){prom_t = true;}
+    i1 = x_init;
+    i2 = x_final;
+    j2 = y_final;
+    j1 = y_init;
+    couleur_c = piece_jouee->Couleur;
     }
 
 };
@@ -392,6 +438,7 @@ public:
     double valeur_position() const {return 0;} //a def
     bool test_echec(){return true;} //a def
     bool gagne()const {return true;} //correspond au test d'echec et mat
+    Position_Echec& coup_humain();
 
     ~Position_Echec(){              //def du destrcuteur
         Liste_coup.clear();
@@ -410,8 +457,9 @@ public:
 
     Position_Echec(echiquier& E){
         echiquier_ref = E;
+    }
 
-
+    Position_Echec(PieceColor couleur) : couleur_joueur(couleur){
     }
 
 
@@ -425,6 +473,8 @@ public:
 //=============================
 
 echiquier echiquier_depart();
+echiquier echiquier_test_p_rooc();
+echiquier echiquier_test_g_rooc();
 echiquier construction_echiquier(Position_Echec& P);
 
 #endif
