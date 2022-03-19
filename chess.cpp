@@ -11,7 +11,7 @@ const int MIN = -1000;
 
 //====================================
 
-void echiquier::affichage(){
+void echiquier::affichage(){  //Fonction d'affichage de l'echiquier (fonctionne)
 
     for (int i = 7; i>=0; i--){
         for (int j=0; j<8; j++){
@@ -30,7 +30,7 @@ void echiquier::affichage(){
 //    "Affichage du coup"
 //======================================
 
-void coup_echec::affichage_standard(){
+void coup_echec::affichage_standard(){ //fonction affichage coup (fonctionne)
     cout<<"(";
     const char* alphat = "ABCDEFGH";
     if (p_rooc == true){
@@ -95,7 +95,7 @@ void coup_echec::affichage_standard(){
 //======================================
 
 
-echiquier construction_echiquier(Position_Echec& P){
+echiquier construction_echiquier(Position_Echec& P){ //Mise à jour de l'echiquier à partir d'une liste de coups
     int N = sizeof(P.Liste_coup);
     echiquier echiquier_final = P.echiquier_ref; //Il faut un constructeur par copie ?
     list<coup_echec>::iterator it;
@@ -251,7 +251,7 @@ double Position_Echec::valeur_position(){
 
 */
 
-echiquier echiquier_depart(){
+echiquier echiquier_depart(){ //Création echiquier de départ 
     echiquier E;
     piece* P_0 = new piece(Tour,Blanc,0,0);
     E.plateau[0]= P_0;
@@ -279,9 +279,9 @@ echiquier echiquier_depart(){
     E.plateau[57]= P_57;
     piece* P_58 = new piece(Fou,Noir,7,2);
     E.plateau[58]= P_58;
-    piece* P_59= new piece(Dame,Noir,7,3);
+    piece* P_59= new piece(Roi,Noir,7,3);
     E.plateau[59]= P_59;
-    piece* P_60= new piece(Roi,Noir,7,4);
+    piece* P_60= new piece(Dame,Noir,7,4);
     E.plateau[60]= P_60;
     piece* P_61= new piece(Fou,Noir,7,5);
     E.plateau[61]= P_61;
