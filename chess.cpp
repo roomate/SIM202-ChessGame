@@ -255,6 +255,68 @@ double Position_Echec::valeur_position(){
 
 */
 
+bool Position_Echec::test_echec(){
+    PieceColor turn = couleur_joueur; // Recuperer la couleur du joueur
+    cout << turn << endl;
+    int m; // Pour les deplacements relatifs non limités
+    //echiquier echiquier_final = construction_echiquier(*this); // Construire echiquier
+    //(*this).mise_a_jour_position(); //Pas besoin de le mettre dans cette fonction on le fera à part
+    int pos_x_roi;
+    int pos_y_roi;
+    vector<vector<int>> Dep;
+    for(int i = 0; i<64;i++){ // Récupérer la position du Roi du joueur
+        if ((echiquier_ref.plateau[i]->P.Nom_piece == Roi) &&
+            (echiquier_ref.plateau[i]->Couleur == turn)){
+           // cout << i<< endl;
+           //cout << (*echiquier_ref.plateau[i]).string_type()<< endl;
+            pos_x_roi = echiquier_ref.plateau[i]->x;
+            pos_y_roi = echiquier_ref.plateau[i]->y;
+        }
+    }
+    for (int i = 0; i < 8; ++i) {
+        for (int j = 0; j < 8; ++j) {
+                if (((echiquier_ref.plateau[8*i+j])!=nullptr) &&
+                    (echiquier_ref.plateau[i]->Couleur != turn)) {// Rechercher les pieces adverses sur le plateau
+                        piece* Pad= echiquier_ref.plateau[8*i+j]; // Récupérer la piece adverse
+                        Dep= (Pad->P).Dep_rel; // Dep relatif du type de la piece
+                        if ((Pad->P).Nom_piece!= Pion ){    // Si c'est pas un pion pas besoin de savoir s'il a bougé ou pas
+                            for(int l = 0; l<Dep[1].size(); l++){
+                                if (Dep[2][l] == 1){
+                                    if ( (i + Dep[0][l]== pos_x_roi) && (j + Dep[1][l]== pos_y_roi) ){
+                                        return true;
+                                    }}
+                                if (Dep[2][l] == 0){
+                                    m=1;
+                                    while ( (echiquier_ref.plateau[8*(i + m*Dep[0][l]) + j + m*Dep[1][l]]== nullptr) && (m<8)){
+                                        if ( (i + m*Dep[0][l]== pos_x_roi) && (j + m*Dep[1][l]== pos_y_roi) ){
+                                            return true;
+                                        }
+                                    m=m+1;
+                                    }
+                                }
+                            }
+                        }
+                        else { // Sinon si c'est un pion
+                            for(int l = 1 ; l<Dep[1].size() -1; l++){ // Toutes les possibilités du Dep relatif diag
+                                if ( (i + Dep[0][l]== pos_x_roi) && (j + Dep[1][l]== pos_y_roi) && (turn==Blanc) ){
+                                    return true;
+                                }
+                                else if ( (i + Dep[0][l]== pos_x_roi) && (j - Dep[1][l]== pos_y_roi) && (turn==Noir) ){
+                                    return true;
+                                }
+                                /*if (Pad->a_bouger == false){ // Cas où il n'a pas bougé
+                                    if ( (i == pos_x_roi) && (j + 2 == pos_y_roi) && ( echiquier_final.plateau[8*i + j + 1] == nullptr) ){
+                                        return true;
+                                    }
+                                }*/
+                            }
+                        }
+                   }
+            }
+        }
+        return false;
+}
+
 echiquier echiquier_depart(){
     echiquier E;
     piece* P_0 = new piece(Tour,Blanc,0,0);
@@ -382,11 +444,47 @@ echiquier echiquier_test_g_rooc(){
     return E;
 }
 
+echiquier echiquier_test_prom(){
+    echiquier E;
+    piece* P_0 = new piece(Tour,Blanc,0,0);
+    E.plateau[0]= P_0;
+    piece* P_1 = new piece(Cavalier,Blanc,0,1);
+    E.plateau[1]= P_1;
+    piece* P_2= new piece(Fou,Blanc,0,2);
+    E.plateau[2]= P_2;
+    piece* P_3= new piece(Dame,Blanc,0,3);
+    E.plateau[3]= P_3;
+    piece* P_4= new piece(Roi,Blanc,0,4);
+    E.plateau[4]= P_4;
+    piece* P_5= new piece(Fou,Blanc,0,5);
+    E.plateau[5]= P_5;
+    piece* P_6= new piece(Cavalier,Blanc,0,6);
+    E.plateau[6]= P_6;
+    piece* P_7= new piece(Tour,Blanc,0,7);
+    E.plateau[7]= P_7;
+    for (int i = 0; i<=6; i++){
+        piece* temp_P= new piece(Pion,Blanc,1,i);
+        E.plateau[8+i] = temp_P;
+    }
+    piece* temp_P= new piece(Pion,Blanc,6,2);
+    E.plateau[6*8+2] = temp_P;
+    return E;
+}
+
+echiquier echiquier_test_echec(){
+
+}
+
 
 
 Position_Echec& Position_Echec::coup_humain(){ //Met le coup joué par le joueur humain dans la liste de coup
     string reponse;
-    cout<<"C'est au tour du joueur blanc de jouer"<<endl;
+    if (this->couleur_joueur==Blanc){
+        cout<<"C'est au tour du joueur blanc de jouer"<<endl;
+    }
+    if (this->couleur_joueur==Noir){
+        cout<<"C'est au tour du joueur noir de jouer"<<endl;
+    }
     cout<<"Coup special ou normal ?"<<endl;
     cin >> reponse;
     string N("normal");
@@ -454,9 +552,11 @@ Position_Echec& Position_Echec::coup_humain(){ //Met le coup joué par le joueur
         if (this->echiquier_ref.plateau[i_final*8+j_final] != nullptr){
             cout<<"Vous mangez une piece"<<endl;
             coup_echec coup_joue(this->echiquier_ref.plateau[i_init*8+j_init],this->echiquier_ref.plateau[i_final*8+j_final],i_init,j_init,i_final,j_final);
+            coup_joue.affichage_standard();
             this->Liste_coup.push_back(coup_joue);
         }else if (this->echiquier_ref.plateau[i_final*8+j_final] == nullptr){
             coup_echec coup_joue(this->echiquier_ref.plateau[i_init*8+j_init],i_init,j_init,i_final,j_final);
+            coup_joue.affichage_standard();
             this->Liste_coup.push_back(coup_joue);
         }
     }
@@ -475,11 +575,13 @@ Position_Echec& Position_Echec::coup_humain(){ //Met le coup joué par le joueur
         if(reponse2 == p_rooc ){
             cout<<"Vous effectuez un petit rooc"<<endl;
             coup_echec coup_joue("p_rooc",this->couleur_joueur);
+            coup_joue.affichage_standard();
             this->Liste_coup.push_back(coup_joue);
         }
         if(reponse2 == g_rooc ){
             cout<<"Vous effectuez un grand rooc"<<endl;
             coup_echec coup_joue("g_rooc",this->couleur_joueur);
+            coup_joue.affichage_standard();
             this->Liste_coup.push_back(coup_joue);
         }else if (reponse2 == prom_c || reponse2==prom_f || reponse2==prom_t || reponse2==prom_d){
             //Recupération des donnees utilisateur
@@ -544,10 +646,12 @@ Position_Echec& Position_Echec::coup_humain(){ //Met le coup joué par le joueur
                     cout<<"Vous mangez une piece"<<endl;
                     cout<<"Vous obtenez un cavalier"<<endl;
                     coup_echec coup_joue("prom_c",this->echiquier_ref.plateau[i_init*8+j_init],this->echiquier_ref.plateau[i_final*8+j_final],i_init,j_init,i_final,j_final);
+                    coup_joue.affichage_standard();
                     this->Liste_coup.push_back(coup_joue);
                 }else if (this->echiquier_ref.plateau[i_final*8+j_final] == nullptr){
                     cout<<"Vous obtenez un cavalier"<<endl;
                     coup_echec coup_joue("prom_c",this->echiquier_ref.plateau[i_init*8+j_init],i_init,j_init,i_final,j_final);
+                    coup_joue.affichage_standard();
                     this->Liste_coup.push_back(coup_joue);
                 }
 
@@ -557,10 +661,12 @@ Position_Echec& Position_Echec::coup_humain(){ //Met le coup joué par le joueur
                     cout<<"Vous mangez une piece"<<endl;
                     cout<<"Vous obtenez un fou"<<endl;
                     coup_echec coup_joue("prom_f",this->echiquier_ref.plateau[i_init*8+j_init],this->echiquier_ref.plateau[i_final*8+j_final],i_init,j_init,i_final,j_final);
+                    coup_joue.affichage_standard();
                     this->Liste_coup.push_back(coup_joue);
                 }else if (this->echiquier_ref.plateau[i_final*8+j_final] == nullptr){
                     cout<<"Vous obtenez un fou"<<endl;
                     coup_echec coup_joue("prom_f",this->echiquier_ref.plateau[i_init*8+j_init],i_init,j_init,i_final,j_final);
+                    coup_joue.affichage_standard();
                     this->Liste_coup.push_back(coup_joue);
                 }
 
@@ -570,10 +676,12 @@ Position_Echec& Position_Echec::coup_humain(){ //Met le coup joué par le joueur
                     cout<<"Vous mangez une piece"<<endl;
                     cout<<"Vous obtenez une dame"<<endl;
                     coup_echec coup_joue("prom_d",this->echiquier_ref.plateau[i_init*8+j_init],this->echiquier_ref.plateau[i_final*8+j_final],i_init,j_init,i_final,j_final);
+                    coup_joue.affichage_standard();
                     this->Liste_coup.push_back(coup_joue);
                 }else if (this->echiquier_ref.plateau[i_final*8+j_final] == nullptr){
                     cout<<"Vous obtenez une dame"<<endl;
                     coup_echec coup_joue("prom_d",this->echiquier_ref.plateau[i_init*8+j_init],i_init,j_init,i_final,j_final);
+                    coup_joue.affichage_standard();
                     this->Liste_coup.push_back(coup_joue);
                 }
 
@@ -583,10 +691,12 @@ Position_Echec& Position_Echec::coup_humain(){ //Met le coup joué par le joueur
                     cout<<"Vous mangez une piece"<<endl;
                     cout<<"Vous obtenez une tour"<<endl;
                     coup_echec coup_joue("prom_t",this->echiquier_ref.plateau[i_init*8+j_init],this->echiquier_ref.plateau[i_final*8+j_final],i_init,j_init,i_final,j_final);
+                    coup_joue.affichage_standard();
                     this->Liste_coup.push_back(coup_joue);
                 }else if (this->echiquier_ref.plateau[i_final*8+j_final] == nullptr){
                     cout<<"Vous obtenez une tour"<<endl;
                     coup_echec coup_joue("prom_t",this->echiquier_ref.plateau[i_init*8+j_init],i_init,j_init,i_final,j_final);
+                    coup_joue.affichage_standard();
                     this->Liste_coup.push_back(coup_joue);
                 }
 
