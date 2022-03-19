@@ -11,11 +11,11 @@ const int MIN = -1000;
 
 //====================================
 
-void echiquier::affichage(){  //Fonction d'affichage de l'echiquier (fonctionne)
+void echiquier::affichage(){
 
     for (int i = 7; i>=0; i--){
         for (int j=0; j<8; j++){
-            if (plateau[i*8+j] != NULL){
+            if (plateau[i*8+j] != nullptr){
                 cout<<plateau[i*8+j]->string_type()<<(plateau[i*8+j]->Couleur==Blanc?"b":"n")<<"  ";
             }else{
                 cout<<"    ";
@@ -30,7 +30,7 @@ void echiquier::affichage(){  //Fonction d'affichage de l'echiquier (fonctionne)
 //    "Affichage du coup"
 //======================================
 
-void coup_echec::affichage_standard(){ //fonction affichage coup (fonctionne)
+void coup_echec::affichage_standard(){
     cout<<"(";
     const char* alphat = "ABCDEFGH";
     if (p_rooc == true){
@@ -95,7 +95,7 @@ void coup_echec::affichage_standard(){ //fonction affichage coup (fonctionne)
 //======================================
 
 
-echiquier construction_echiquier(Position_Echec& P){ //Mise à jour de l'echiquier à partir d'une liste de coups
+echiquier construction_echiquier(Position_Echec& P){
     int N = sizeof(P.Liste_coup);
     echiquier echiquier_final = P.echiquier_ref; //Il faut un constructeur par copie ?
     list<coup_echec>::iterator it;
@@ -202,13 +202,14 @@ Position_Echec& Position_Echec::mise_a_jour_position(){ //Met à jour l'echiquie
     int N = sizeof(this->Liste_coup);
     this->Dernier_coup = this->Liste_coup.back(); //Recup du dernier coup
 
-
-    enum PieceColor Dernier_joueur = this->Liste_coup.back().couleur_c;
-    if (Dernier_joueur = Blanc){
+    enum PieceColor Dernier_joueur = this->Dernier_coup.couleur_c;
+    if (Dernier_joueur == Blanc){
         this->couleur_joueur = Noir;
+        cout<<"c'est maintenant au joueur noir de jouer"<<endl;
     }
-    if (Dernier_joueur = Noir){
+    if (Dernier_joueur == Noir){
         this->couleur_joueur = Blanc;
+        cout<<"c'est maintenant au joueur blanc de jouer"<<endl;
     }
 
     echiquier_ref = construction_echiquier(*this); //Mise à jour de l'echiquier
@@ -251,7 +252,7 @@ double Position_Echec::valeur_position(){
 
 */
 
-echiquier echiquier_depart(){ //Création echiquier de départ 
+echiquier echiquier_depart(){
     echiquier E;
     piece* P_0 = new piece(Tour,Blanc,0,0);
     E.plateau[0]= P_0;
