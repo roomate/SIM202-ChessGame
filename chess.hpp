@@ -4,6 +4,7 @@
 #include <iostream>
 #include <cmath>
 #include <vector>
+#include <list>
 
 #include "class_position.hpp"
 
@@ -190,9 +191,21 @@ public:
     echiquier(const echiquier &p){ //constructeur par copie
         this->plateau.resize(64,NULL);
         for (int i = 0; i<=63; i++){
-            piece* p_temp = new piece(p.plateau[i]->P.Nom_piece, p.plateau[i]->Couleur,p.plateau[i]->x,p.plateau[i]->y);
-            this->plateau[i] = p_temp;
+            if (p.plateau[i] != nullptr){
+                piece* p_temp = new piece(p.plateau[i]->P.Nom_piece, p.plateau[i]->Couleur,p.plateau[i]->x,p.plateau[i]->y);
+                this->plateau[i] = p_temp;
+            }
         }
+    }
+    echiquier &operator=(const echiquier &p){ //constructeur par copie
+        this->plateau.resize(64,NULL);
+        for (int i = 0; i<=63; i++){
+            if (p.plateau[i] != nullptr){
+                piece* p_temp = new piece(p.plateau[i]->P.Nom_piece, p.plateau[i]->Couleur,p.plateau[i]->x,p.plateau[i]->y);
+                this->plateau[i] = p_temp;
+            }
+        }
+        return *this;
     }
 
 
@@ -211,12 +224,12 @@ public:
 class coup_echec{
 public:
     PieceColor couleur_c;
-    piece* PJ = NULL;
+    piece* PJ = nullptr;
     int i1;
     int i2;
     int j1;
     int j2;
-    piece* Pprise = NULL;
+    piece* Pprise = nullptr;
     bool p_rooc;
     bool g_rooc;
     bool prom_f;
@@ -231,19 +244,23 @@ public:
 
     }
     ~coup_echec(){ //destructeur
-        if (PJ!=NULL){
+        if (PJ!=nullptr){
             delete PJ;
         }
-        if (Pprise!=NULL){
+        if (Pprise!=nullptr){
             delete Pprise;
         }
     }
 
     coup_echec(const coup_echec &c){
-        piece* p_temp = new piece(c.PJ->P.Nom_piece,c.PJ->Couleur,c.PJ->x,c.PJ->y);
-        this->PJ = p_temp;
-        piece* pprise_temp = new piece(c.Pprise->P.Nom_piece,c.Pprise->Couleur,c.Pprise->x,c.Pprise->y);
-        this->Pprise = pprise_temp;
+        if (c.PJ!=nullptr){
+            piece* p_temp = new piece(c.PJ->P.Nom_piece,c.PJ->Couleur,c.PJ->x,c.PJ->y);
+            this->PJ = p_temp;
+        }
+        if (c.Pprise != nullptr){
+            piece* pprise_temp = new piece(c.Pprise->P.Nom_piece,c.Pprise->Couleur,c.Pprise->x,c.Pprise->y);
+            this->Pprise = pprise_temp;
+        }
         this->couleur_c = c.couleur_c;
         this->i1 = c.i1;
         this->i2 = c.i2;
@@ -260,10 +277,39 @@ public:
 
     }
 
+    coup_echec &operator=(const coup_echec &c){
+        if (c.PJ!=nullptr){
+            piece* p_temp = new piece(c.PJ->P.Nom_piece,c.PJ->Couleur,c.PJ->x,c.PJ->y);
+            this->PJ = p_temp;
+        }
+        if (c.Pprise != nullptr){
+            piece* pprise_temp = new piece(c.Pprise->P.Nom_piece,c.Pprise->Couleur,c.Pprise->x,c.Pprise->y);
+            this->Pprise = pprise_temp;
+        }
+        this->couleur_c = c.couleur_c;
+        this->i1 = c.i1;
+        this->i2 = c.i2;
+        this->j1 = c.j1;
+        this->j2 = c.j2;
+        this->p_rooc = c.p_rooc;
+        this->g_rooc = c.g_rooc;
+        this->prom_f = c.prom_f;
+        this->prom_d = c.prom_d;
+        this->prom_c = c.prom_c;
+        this->prom_t = c.prom_t;
+        this->echec = c.echec;
+        this->echec_mat = c.echec_mat;
+        return *this;
+
+    }
+
+
 
     coup_echec(piece* piece_jouee,int x_init, int y_init, int x_final, int y_final){ // Coup correspondant à un déplacement
-        piece* p_temp = new piece(piece_jouee->P.Nom_piece,piece_jouee->Couleur,piece_jouee->x,piece_jouee->y);
-        PJ = p_temp;
+        if (piece_jouee!=nullptr){
+            piece* p_temp = new piece(piece_jouee->P.Nom_piece,piece_jouee->Couleur,piece_jouee->x,piece_jouee->y);
+            PJ = p_temp;
+        }
         p_rooc = false;
         g_rooc = false;
         prom_f = false;
@@ -278,10 +324,14 @@ public:
 
     }
     coup_echec(piece* piece_jouee,piece* piece_prise,int x_init, int y_init, int x_final, int y_final){ // Coup correspondant à un déplacement
-        piece* p_temp = new piece(piece_jouee->P.Nom_piece,piece_jouee->Couleur,piece_jouee->x,piece_jouee->y);
-        PJ = p_temp;
-        piece* pprise_temp = new piece(piece_prise->P.Nom_piece,piece_prise->Couleur,piece_prise->x,piece_prise->y);
-        Pprise = pprise_temp;
+        if (piece_jouee!=nullptr){
+            piece* p_temp = new piece(piece_jouee->P.Nom_piece,piece_jouee->Couleur,piece_jouee->x,piece_jouee->y);
+            PJ = p_temp;
+        }
+        if (piece_prise!=nullptr){
+            piece* pprise_temp = new piece(piece_prise->P.Nom_piece,piece_prise->Couleur,piece_prise->x,piece_prise->y);
+            Pprise = pprise_temp;
+        }
         p_rooc = false;
         g_rooc = false;
         prom_f = false;
@@ -319,11 +369,11 @@ public:
     //std::list<coup_echec> Liste_coup;
     PieceColor couleur_joueur; //Couleur du joueur à qui c'est au tour de jouer
     coup_echec Dernier_coup;
-    coup_echec* Liste_coup;
+    list<coup_echec> Liste_coup;
     echiquier echiquier_ref;
 
     Position_Echec(){
-        Liste_coup = new coup_echec[10];
+        //Liste_coup = new coup_echec[10];
     }
 
     Position_Echec& position_possible(){ return *this;} //a def
@@ -332,7 +382,7 @@ public:
     bool gagne()const {return true;} //correspond au test d'echec et mat
 
     ~Position_Echec(){              //def du destrcuteur
-        delete[] Liste_coup;
+        Liste_coup.clear();
     }
 
     bool test_match_nul();
@@ -340,17 +390,13 @@ public:
     Position_Echec& mise_a_jour_position();
 
     //Constructeur
-    Position_Echec(echiquier& E, PieceColor C, coup_echec* L){
-        Liste_coup = new coup_echec[10];
+    Position_Echec(echiquier& E, PieceColor C, list<coup_echec> L){
         echiquier_ref = E;
         couleur_joueur = C;
-        for (int i =0 ; i<int(sizeof(L));i++){
-            Liste_coup[i] = L[i];
-        }
+        Liste_coup = L;
     }
 
     Position_Echec(echiquier& E){
-        Liste_coup = new coup_echec[10];
         echiquier_ref = E;
 
 
