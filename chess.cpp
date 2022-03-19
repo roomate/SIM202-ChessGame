@@ -98,9 +98,10 @@ void coup_echec::affichage_standard(){
 echiquier construction_echiquier(Position_Echec& P){
     int N = sizeof(P.Liste_coup);
     echiquier echiquier_final = P.echiquier_ref; //Il faut un constructeur par copie ?
-    for (int i = 0;i<N;i++){
-        if (P.Liste_coup[i].p_rooc== true){
-            if (P.Liste_coup[i].couleur_c == Blanc){
+    list<coup_echec>::iterator it;
+    for (it=P.Liste_coup.begin();it!=P.Liste_coup.end();it++){
+        if (it->p_rooc== true){
+            if (it->couleur_c == Blanc){
                 echiquier_final.plateau[6] = echiquier_final.plateau[4];
                 echiquier_final.plateau[6]->x = 0;
                 echiquier_final.plateau[6]->y = 6;
@@ -110,7 +111,7 @@ echiquier construction_echiquier(Position_Echec& P){
                 echiquier_final.plateau[5]->y = 5;
                 echiquier_final.plateau[7] = NULL;
             }
-            if (P.Liste_coup[i].couleur_c == Noir){
+            if (it->couleur_c == Noir){
                 echiquier_final.plateau[61] = echiquier_final.plateau[63];
                 echiquier_final.plateau[61]->x = 7;
                 echiquier_final.plateau[61]->y = 5;
@@ -122,8 +123,8 @@ echiquier construction_echiquier(Position_Echec& P){
             }
 
         }
-        else if (P.Liste_coup[i].g_rooc == true){
-            if (P.Liste_coup[i].couleur_c == Blanc){
+        else if (it->g_rooc == true){
+            if (it->couleur_c == Blanc){
                 echiquier_final.plateau[2] = echiquier_final.plateau[4];
                 echiquier_final.plateau[2]->x = 0;
                 echiquier_final.plateau[2]->y = 2;
@@ -133,7 +134,7 @@ echiquier construction_echiquier(Position_Echec& P){
                 echiquier_final.plateau[3]->y = 3;
                 echiquier_final.plateau[0] = NULL;
             }
-            if (P.Liste_coup[i].couleur_c == Noir){
+            if (it->couleur_c == Noir){
                 echiquier_final.plateau[59] = echiquier_final.plateau[56];
                 echiquier_final.plateau[59]->x = 7;
                 echiquier_final.plateau[59]->y = 3;
@@ -145,52 +146,52 @@ echiquier construction_echiquier(Position_Echec& P){
             }
 
         }
-        else if (P.Liste_coup[i].prom_f == true){
-                piece* promotion = echiquier_final.plateau[P.Liste_coup[i].i1*8+P.Liste_coup[i].j1];
+        else if (it->prom_f == true){
+                piece* promotion = echiquier_final.plateau[it->i1*8+it->j1];
                 fou type_prom;
                 promotion->P = type_prom;
-                promotion->x = P.Liste_coup[i].i2;
-                promotion->y = P.Liste_coup[i].j2;
-                echiquier_final.plateau[P.Liste_coup[i].i2*8+P.Liste_coup[i].j2] = promotion;
-                echiquier_final.plateau[P.Liste_coup[i].i1*8+P.Liste_coup[i].j1] = NULL;
+                promotion->x = it->i2;
+                promotion->y = it->j2;
+                echiquier_final.plateau[it->i2*8+it->j2] = promotion;
+                echiquier_final.plateau[it->i1*8+it->j1] = NULL;
 
         }
-        else if (P.Liste_coup[i].prom_d == true){
-                piece* promotion = echiquier_final.plateau[P.Liste_coup[i].i1*8+P.Liste_coup[i].j1];
+        else if (it->prom_d == true){
+                piece* promotion = echiquier_final.plateau[it->i1*8+it->j1];
                 dame type_prom;
                 promotion->P = type_prom;
-                promotion->x = P.Liste_coup[i].i2;
-                promotion->y = P.Liste_coup[i].j2;
-                echiquier_final.plateau[P.Liste_coup[i].i2*8+P.Liste_coup[i].j2] = promotion;
-                echiquier_final.plateau[P.Liste_coup[i].i1*8+P.Liste_coup[i].j1] = NULL;
+                promotion->x = it->i2;
+                promotion->y = it->j2;
+                echiquier_final.plateau[it->i2*8+it->j2] = promotion;
+                echiquier_final.plateau[it->i1*8+it->j1] = NULL;
 
         }
-        else if (P.Liste_coup[i].prom_t == true){
-                piece* promotion = echiquier_final.plateau[P.Liste_coup[i].i1*8+P.Liste_coup[i].j1];
+        else if (it->prom_t == true){
+                piece* promotion = echiquier_final.plateau[it->i1*8+it->j1];
                 tour type_prom;
                 promotion->P = type_prom;
-                promotion->x = P.Liste_coup[i].i2;
-                promotion->y = P.Liste_coup[i].j2;
-                echiquier_final.plateau[P.Liste_coup[i].i2*8+P.Liste_coup[i].j2] = promotion;
-                echiquier_final.plateau[P.Liste_coup[i].i1*8+P.Liste_coup[i].j1] = NULL;
+                promotion->x = it->i2;
+                promotion->y = it->j2;
+                echiquier_final.plateau[it->i2*8+it->j2] = promotion;
+                echiquier_final.plateau[it->i1*8+it->j1] = NULL;
 
         }
-        else if (P.Liste_coup[i].prom_c == true){
-                piece* promotion = echiquier_final.plateau[P.Liste_coup[i].i1*8+P.Liste_coup[i].j1];
+        else if (it->prom_c == true){
+                piece* promotion = echiquier_final.plateau[it->i1*8+it->j1];
                 cavalier type_prom;
                 promotion->P = type_prom;
-                promotion->x = P.Liste_coup[i].i2;
-                promotion->y = P.Liste_coup[i].j2;
-                echiquier_final.plateau[P.Liste_coup[i].i2*8+P.Liste_coup[i].j2] = promotion;
-                echiquier_final.plateau[P.Liste_coup[i].i1*8+P.Liste_coup[i].j1] = NULL;
+                promotion->x = it->i2;
+                promotion->y = it->j2;
+                echiquier_final.plateau[it->i2*8+it->j2] = promotion;
+                echiquier_final.plateau[it->i1*8+it->j1] = NULL;
 
         }
         else {
-                piece* temp = echiquier_final.plateau[P.Liste_coup[i].i1*8+P.Liste_coup[i].j1];
-                temp->x = P.Liste_coup[i].i2;
-                temp->y = P.Liste_coup[i].j2;
-                echiquier_final.plateau[P.Liste_coup[i].i2*8+P.Liste_coup[i].j2] = temp;
-                echiquier_final.plateau[P.Liste_coup[i].i1*8+P.Liste_coup[i].j1] = NULL;
+                piece* temp = echiquier_final.plateau[it->i1*8+it->j1];
+                temp->x = it->i2;
+                temp->y = it->j2;
+                echiquier_final.plateau[it->i2*8+it->j2] = temp;
+                echiquier_final.plateau[it->i1*8+it->j1] = nullptr;
         }
     }
     return(echiquier_final);
@@ -199,10 +200,10 @@ echiquier construction_echiquier(Position_Echec& P){
 
 Position_Echec& Position_Echec::mise_a_jour_position(){ //Met à jour l'echiquier de ref, vide la liste de coup, et determine le joueur à qui c'est au tour de jouer
     int N = sizeof(this->Liste_coup);
-    this->Dernier_coup = this->Liste_coup[N-1]; //Recup du dernier coup
+    this->Dernier_coup = this->Liste_coup.back(); //Recup du dernier coup
 
 
-    enum PieceColor Dernier_joueur = this->Liste_coup[N-1].couleur_c;
+    enum PieceColor Dernier_joueur = this->Liste_coup.back().couleur_c;
     if (Dernier_joueur = Blanc){
         this->couleur_joueur = Noir;
     }
@@ -213,7 +214,7 @@ Position_Echec& Position_Echec::mise_a_jour_position(){ //Met à jour l'echiquie
     echiquier_ref = construction_echiquier(*this); //Mise à jour de l'echiquier
 
 
-    delete[] Liste_coup;
+    Liste_coup.clear();
 
     return *this;
 }
