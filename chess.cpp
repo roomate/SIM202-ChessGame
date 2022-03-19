@@ -1,6 +1,7 @@
 #include "chess.hpp"
 #include <cmath>
 #include <string>
+#include <sstream>
 //====================================
 
 const int alpha = 1;
@@ -299,59 +300,308 @@ echiquier echiquier_depart(){
     return E;
 }
 
-/* A FAIRE
-bool Position_Echec::test_echec(){
-    echiquier echiquier_final = construction_echiquier(*this);
-    int pos_x_roi;
-    int pos_y_roi;
-    for(int i = 0; i<64;i++){
-        if (echiquier_final.plateau[i].P.Nom_piece = "R" && echiquier_final.plateau[i].Couleur = couleur_joueur){
-            pos_x_roi = echiquier_final.plateau[i].x;
-            pos_y_roi = echiquier_final.plateau[i].y;
+
+echiquier echiquier_test_p_rooc(){
+    echiquier E;
+    piece* P_0 = new piece(Tour,Blanc,0,0);
+    E.plateau[0]= P_0;
+    piece* P_1 = new piece(Cavalier,Blanc,0,1);
+    E.plateau[1]= P_1;
+    piece* P_2= new piece(Fou,Blanc,0,2);
+    E.plateau[2]= P_2;
+    piece* P_3= new piece(Dame,Blanc,0,3);
+    E.plateau[3]= P_3;
+    piece* P_4= new piece(Roi,Blanc,0,4);
+    E.plateau[4]= P_4;
+    piece* P_7= new piece(Tour,Blanc,0,7);
+    E.plateau[7]= P_7;
+    for (int i = 0; i<=7; i++){
+        piece* temp_P= new piece(Pion,Blanc,1,i);
+        E.plateau[8+i] = temp_P;
+    }
+    piece* P_56 = new piece(Tour,Noir,7,0);
+    E.plateau[56]= P_56;
+    piece* P_57 = new piece(Cavalier,Noir,7,1);
+    E.plateau[57]= P_57;
+    piece* P_58 = new piece(Fou,Noir,7,2);
+    E.plateau[58]= P_58;
+    piece* P_59= new piece(Roi,Noir,7,3);
+    E.plateau[59]= P_59;
+    piece* P_60= new piece(Dame,Noir,7,4);
+    E.plateau[60]= P_60;
+    piece* P_61= new piece(Fou,Noir,7,5);
+    E.plateau[61]= P_61;
+    piece* P_62= new piece(Cavalier,Noir,7,6);
+    E.plateau[62]= P_62;
+    piece* P_63= new piece(Tour,Noir,7,7);
+    E.plateau[63]= P_63;
+    for (int i = 0; i<=7; i++){
+        piece* temp_P= new piece(Pion,Noir,6,i);
+        E.plateau[6*8+i] = temp_P;
+    }
+    return E;
+}
+
+echiquier echiquier_test_g_rooc(){
+    echiquier E;
+    piece* P_0 = new piece(Tour,Blanc,0,0);
+    E.plateau[0]= P_0;
+
+    piece* P_4= new piece(Roi,Blanc,0,4);
+    E.plateau[4]= P_4;
+    piece* P_5= new piece(Fou,Blanc,0,5);
+    E.plateau[5]= P_5;
+    piece* P_6= new piece(Cavalier,Blanc,0,6);
+    E.plateau[6]= P_6;
+    piece* P_7= new piece(Tour,Blanc,0,7);
+    E.plateau[7]= P_7;
+    for (int i = 0; i<=7; i++){
+        piece* temp_P= new piece(Pion,Blanc,1,i);
+        E.plateau[8+i] = temp_P;
+    }
+    piece* P_56 = new piece(Tour,Noir,7,0);
+    E.plateau[56]= P_56;
+    piece* P_57 = new piece(Cavalier,Noir,7,1);
+    E.plateau[57]= P_57;
+    piece* P_58 = new piece(Fou,Noir,7,2);
+    E.plateau[58]= P_58;
+    piece* P_59= new piece(Roi,Noir,7,3);
+    E.plateau[59]= P_59;
+    piece* P_60= new piece(Dame,Noir,7,4);
+    E.plateau[60]= P_60;
+    piece* P_61= new piece(Fou,Noir,7,5);
+    E.plateau[61]= P_61;
+    piece* P_62= new piece(Cavalier,Noir,7,6);
+    E.plateau[62]= P_62;
+    piece* P_63= new piece(Tour,Noir,7,7);
+    E.plateau[63]= P_63;
+    for (int i = 0; i<=7; i++){
+        piece* temp_P= new piece(Pion,Noir,6,i);
+        E.plateau[6*8+i] = temp_P;
+    }
+    return E;
+}
+
+
+
+Position_Echec& Position_Echec::coup_humain(){ //Met le coup joué par le joueur humain dans la liste de coup
+    string reponse;
+    cout<<"C'est au tour du joueur blanc de jouer"<<endl;
+    cout<<"Coup special ou normal ?"<<endl;
+    cin >> reponse;
+    string N("normal");
+    string S("special");
+    if (reponse == N){
+        //Recupération des donnees utilisateur
+        cout<<"Position de la piece a jouer ?"<<endl;
+        string pos_int;
+        cin >> pos_int;
+        cout<<"Position finale de la piece ?"<<endl;
+        string pos_final;
+        cin >> pos_final;
+
+        //Analyse de ces données
+        char c1 = pos_int[1];
+        char c2 = pos_final[1];
+        string str_i_init(1,c1);
+        string str_i_final(1,c2);
+        pos_int.resize(1);
+        pos_final.resize(1);
+
+        int j_init;
+        int j_final;
+        int i_init;
+        int i_final;
+        stringstream ss;
+            ss << str_i_init;
+            ss >> i_init;
+        stringstream sss;
+            sss << str_i_final;
+            sss >> i_final;
+        i_init = i_init -1;
+        i_final = i_final -1;
+
+        string A("A");
+        string B("B");
+        string C("C");
+        string D("D");
+        string E("E");
+        string F("F");
+        string G("G");
+        string H("H");
+
+
+        if (pos_int==A){ j_init = 0 ;}
+        if (pos_int==B){ j_init = 1 ;}
+        if (pos_int==C){ j_init = 2 ;}
+        if (pos_int==D){ j_init = 3 ;}
+        if (pos_int==E){ j_init = 4 ;}
+        if (pos_int==F){ j_init = 5 ;}
+        if (pos_int==G){ j_init = 6 ;}
+        if (pos_int==H){ j_init = 7 ;}
+
+        if (pos_final==A){ j_final = 0 ;}
+        if (pos_final==B){ j_final = 1 ;}
+        if (pos_final==C){ j_final = 2 ;}
+        if (pos_final==D){ j_final = 3 ;}
+        if (pos_final==E){ j_final = 4 ;}
+        if (pos_final==F){ j_final = 5 ;}
+        if (pos_final==G){ j_final = 6 ;}
+        if (pos_final==H){ j_final = 7 ;}
+
+        //Mise à jour de la liste de coup de la position
+
+        if (this->echiquier_ref.plateau[i_final*8+j_final] != nullptr){
+            cout<<"Vous mangez une piece"<<endl;
+            coup_echec coup_joue(this->echiquier_ref.plateau[i_init*8+j_init],this->echiquier_ref.plateau[i_final*8+j_final],i_init,j_init,i_final,j_final);
+            this->Liste_coup.push_back(coup_joue);
+        }else if (this->echiquier_ref.plateau[i_final*8+j_final] == nullptr){
+            coup_echec coup_joue(this->echiquier_ref.plateau[i_init*8+j_init],i_init,j_init,i_final,j_final);
+            this->Liste_coup.push_back(coup_joue);
         }
     }
+    if (reponse == S){
+        cout<<"lequel ? : g_rooc , p_rooc , prom_t , prom_d , prom_c , prom_f ?"<<endl;
+        string reponse2;
+        cin >> reponse2;
 
-}
-*/
-/*
+        string p_rooc("p_rooc");
+        string g_rooc("g_rooc");
+        string prom_t("prom_t");
+        string prom_d("prom_d");
+        string prom_c("prom_c");
+        string prom_f("prom_f");
 
-Position_Echec& Position_Echec coup_humain(Position_Echec& p){ //Met le coup joué par le joueur humain dans la liste de coup
-    cout<<"Position de la pièce à jouer ?"<<endl;
-    string pos_int;
-    cin >> pos_int;
-    cout<<"Position finale de la pièce ?"<<endl;
-    char pos_final[2];
-    cin >> pos_final;
-    int i_init;
-    int i_final;
-    int j_init = int(pos_int[1]);
-    int j_final = int(pos_final[1]);
+        if(reponse2 == p_rooc ){
+            cout<<"Vous effectuez un petit rooc"<<endl;
+            coup_echec coup_joue("p_rooc",this->couleur_joueur);
+            this->Liste_coup.push_back(coup_joue);
+        }
+        if(reponse2 == g_rooc ){
+            cout<<"Vous effectuez un grand rooc"<<endl;
+            coup_echec coup_joue("g_rooc",this->couleur_joueur);
+            this->Liste_coup.push_back(coup_joue);
+        }else if (reponse2 == prom_c || reponse2==prom_f || reponse2==prom_t || reponse2==prom_d){
+            //Recupération des donnees utilisateur
+            cout<<"Position de la piece a jouer ?"<<endl;
+            string pos_int;
+            cin >> pos_int;
+            cout<<"Position finale de la piece ?"<<endl;
+            string pos_final;
+            cin >> pos_final;
+
+            //Analyse de ces données
+            char c1 = pos_int[1];
+            char c2 = pos_final[1];
+            string str_i_init(1,c1);
+            string str_i_final(1,c2);
+            pos_int.resize(1);
+            pos_final.resize(1);
+
+            int j_init;
+            int j_final;
+            int i_init;
+            int i_final;
+            stringstream ss;
+            ss << str_i_init;
+            ss >> i_init;
+            stringstream sss;
+            sss << str_i_final;
+            sss >> i_final;
+            i_init = i_init -1;
+            i_final = i_final -1;
+
+            string A("A");
+            string B("B");
+            string C("C");
+            string D("D");
+            string E("E");
+            string F("F");
+            string G("G");
+            string H("H");
 
 
-    if (pos_int[0]=="A"){ i_init = 0 ;}
-    if (pos_int[0]=="B"){ i_init = 1 ;}
-    if (pos_int[0]=="C"){ i_init = 2 ;}
-    if (pos_int[0]=="D"){ i_init = 3 ;}
-    if (pos_int[0]=="E"){ i_init = 4 ;}
-    if (pos_int[0]=="F"){ i_init = 5 ;}
-    if (pos_int[0]=="G"){ i_init = 6 ;}
-    if (pos_int[0]=="H"){ i_init = 7 ;}
+            if (pos_int==A){ j_init = 0 ;}
+            if (pos_int==B){ j_init = 1 ;}
+            if (pos_int==C){ j_init = 2 ;}
+            if (pos_int==D){ j_init = 3 ;}
+            if (pos_int==E){ j_init = 4 ;}
+            if (pos_int==F){ j_init = 5 ;}
+            if (pos_int==G){ j_init = 6 ;}
+            if (pos_int==H){ j_init = 7 ;}
 
-    if (pos_final[0]=="A"){ i_final = 0 ;}
-    if (pos_final[0]=="B"){ i_final = 1 ;}
-    if (pos_final[0]=="C"){ i_final = 2 ;}
-    if (pos_final[0]=="D"){ i_final = 3 ;}
-    if (pos_final[0]=="E"){ i_final = 4 ;}
-    if (pos_final[0]=="F"){ i_final = 5 ;}
-    if (pos_final[0]=="G"){ i_final = 6 ;}
-    if (pos_final[0]=="H"){ i_final = 7 ;}
+            if (pos_final==A){ j_final = 0 ;}
+            if (pos_final==B){ j_final = 1 ;}
+            if (pos_final==C){ j_final = 2 ;}
+            if (pos_final==D){ j_final = 3 ;}
+            if (pos_final==E){ j_final = 4 ;}
+            if (pos_final==F){ j_final = 5 ;}
+            if (pos_final==G){ j_final = 6 ;}
+            if (pos_final==H){ j_final = 7 ;}
+
+            if(reponse2 == prom_c){
+                if (this->echiquier_ref.plateau[i_final*8+j_final] != nullptr){
+                    cout<<"Vous mangez une piece"<<endl;
+                    cout<<"Vous obtenez un cavalier"<<endl;
+                    coup_echec coup_joue("prom_c",this->echiquier_ref.plateau[i_init*8+j_init],this->echiquier_ref.plateau[i_final*8+j_final],i_init,j_init,i_final,j_final);
+                    this->Liste_coup.push_back(coup_joue);
+                }else if (this->echiquier_ref.plateau[i_final*8+j_final] == nullptr){
+                    cout<<"Vous obtenez un cavalier"<<endl;
+                    coup_echec coup_joue("prom_c",this->echiquier_ref.plateau[i_init*8+j_init],i_init,j_init,i_final,j_final);
+                    this->Liste_coup.push_back(coup_joue);
+                }
+
+            }
+            if(reponse2 == prom_f){
+                if (this->echiquier_ref.plateau[i_final*8+j_final] != nullptr){
+                    cout<<"Vous mangez une piece"<<endl;
+                    cout<<"Vous obtenez un fou"<<endl;
+                    coup_echec coup_joue("prom_f",this->echiquier_ref.plateau[i_init*8+j_init],this->echiquier_ref.plateau[i_final*8+j_final],i_init,j_init,i_final,j_final);
+                    this->Liste_coup.push_back(coup_joue);
+                }else if (this->echiquier_ref.plateau[i_final*8+j_final] == nullptr){
+                    cout<<"Vous obtenez un fou"<<endl;
+                    coup_echec coup_joue("prom_f",this->echiquier_ref.plateau[i_init*8+j_init],i_init,j_init,i_final,j_final);
+                    this->Liste_coup.push_back(coup_joue);
+                }
+
+            }
+            if(reponse2 == prom_d){
+                if (this->echiquier_ref.plateau[i_final*8+j_final] != nullptr){
+                    cout<<"Vous mangez une piece"<<endl;
+                    cout<<"Vous obtenez une dame"<<endl;
+                    coup_echec coup_joue("prom_d",this->echiquier_ref.plateau[i_init*8+j_init],this->echiquier_ref.plateau[i_final*8+j_final],i_init,j_init,i_final,j_final);
+                    this->Liste_coup.push_back(coup_joue);
+                }else if (this->echiquier_ref.plateau[i_final*8+j_final] == nullptr){
+                    cout<<"Vous obtenez une dame"<<endl;
+                    coup_echec coup_joue("prom_d",this->echiquier_ref.plateau[i_init*8+j_init],i_init,j_init,i_final,j_final);
+                    this->Liste_coup.push_back(coup_joue);
+                }
+
+            }
+            if(reponse2 == prom_t){
+                if (this->echiquier_ref.plateau[i_final*8+j_final] != nullptr){
+                    cout<<"Vous mangez une piece"<<endl;
+                    cout<<"Vous obtenez une tour"<<endl;
+                    coup_echec coup_joue("prom_t",this->echiquier_ref.plateau[i_init*8+j_init],this->echiquier_ref.plateau[i_final*8+j_final],i_init,j_init,i_final,j_final);
+                    this->Liste_coup.push_back(coup_joue);
+                }else if (this->echiquier_ref.plateau[i_final*8+j_final] == nullptr){
+                    cout<<"Vous obtenez une tour"<<endl;
+                    coup_echec coup_joue("prom_t",this->echiquier_ref.plateau[i_init*8+j_init],i_init,j_init,i_final,j_final);
+                    this->Liste_coup.push_back(coup_joue);
+                }
+
+            }
 
 
-    if (p.echiquier_ref.plateau[i_final*8+j_final] != nullptr){
-        cout<<"Vous mangez une pièce"<<endl;
-        coup_echec coup_joue(p.echiquier_ref.plateau[i_init*8+j_init],p.echiquier_ref.plateau[i_final*8+j_final],i_init,j_init,i_final,j_final);
-        p.Liste_coup.push_back(coup_joue);
+        }
+
     }
 
-*/
+
+
+
+    return(*this);
+}
+
+
 
