@@ -1,6 +1,6 @@
 #include "chess.hpp"
 #include <cmath>
-
+#include <string>
 //====================================
 
 const int alpha = 1;
@@ -105,21 +105,21 @@ echiquier construction_echiquier(Position_Echec& P){
                 echiquier_final.plateau[6] = echiquier_final.plateau[4];
                 echiquier_final.plateau[6]->x = 0;
                 echiquier_final.plateau[6]->y = 6;
-                echiquier_final.plateau[4] = NULL;
+                echiquier_final.plateau[4] = nullptr;
                 echiquier_final.plateau[5] = echiquier_final.plateau[7];
                 echiquier_final.plateau[5]->x = 0;
                 echiquier_final.plateau[5]->y = 5;
-                echiquier_final.plateau[7] = NULL;
+                echiquier_final.plateau[7] = nullptr;
             }
             if (it->couleur_c == Noir){
                 echiquier_final.plateau[61] = echiquier_final.plateau[63];
                 echiquier_final.plateau[61]->x = 7;
                 echiquier_final.plateau[61]->y = 5;
-                echiquier_final.plateau[63] = NULL;
+                echiquier_final.plateau[63] = nullptr;
                 echiquier_final.plateau[62] = echiquier_final.plateau[60];
                 echiquier_final.plateau[62]->x = 7;
                 echiquier_final.plateau[62]->y = 6;
-                echiquier_final.plateau[60] = NULL;
+                echiquier_final.plateau[60] = nullptr;
             }
 
         }
@@ -128,21 +128,21 @@ echiquier construction_echiquier(Position_Echec& P){
                 echiquier_final.plateau[2] = echiquier_final.plateau[4];
                 echiquier_final.plateau[2]->x = 0;
                 echiquier_final.plateau[2]->y = 2;
-                echiquier_final.plateau[4] = NULL;
+                echiquier_final.plateau[4] = nullptr;
                 echiquier_final.plateau[3] = echiquier_final.plateau[0];
                 echiquier_final.plateau[3]->x = 0;
                 echiquier_final.plateau[3]->y = 3;
-                echiquier_final.plateau[0] = NULL;
+                echiquier_final.plateau[0] = nullptr;
             }
             if (it->couleur_c == Noir){
                 echiquier_final.plateau[59] = echiquier_final.plateau[56];
                 echiquier_final.plateau[59]->x = 7;
                 echiquier_final.plateau[59]->y = 3;
-                echiquier_final.plateau[56] = NULL;
+                echiquier_final.plateau[56] = nullptr;
                 echiquier_final.plateau[58] = echiquier_final.plateau[60];
                 echiquier_final.plateau[58]->x = 7;
                 echiquier_final.plateau[58]->y = 2;
-                echiquier_final.plateau[60] = NULL;
+                echiquier_final.plateau[60] = nullptr;
             }
 
         }
@@ -153,7 +153,7 @@ echiquier construction_echiquier(Position_Echec& P){
                 promotion->x = it->i2;
                 promotion->y = it->j2;
                 echiquier_final.plateau[it->i2*8+it->j2] = promotion;
-                echiquier_final.plateau[it->i1*8+it->j1] = NULL;
+                echiquier_final.plateau[it->i1*8+it->j1] = nullptr;
 
         }
         else if (it->prom_d == true){
@@ -163,7 +163,7 @@ echiquier construction_echiquier(Position_Echec& P){
                 promotion->x = it->i2;
                 promotion->y = it->j2;
                 echiquier_final.plateau[it->i2*8+it->j2] = promotion;
-                echiquier_final.plateau[it->i1*8+it->j1] = NULL;
+                echiquier_final.plateau[it->i1*8+it->j1] = nullptr;
 
         }
         else if (it->prom_t == true){
@@ -173,7 +173,7 @@ echiquier construction_echiquier(Position_Echec& P){
                 promotion->x = it->i2;
                 promotion->y = it->j2;
                 echiquier_final.plateau[it->i2*8+it->j2] = promotion;
-                echiquier_final.plateau[it->i1*8+it->j1] = NULL;
+                echiquier_final.plateau[it->i1*8+it->j1] = nullptr;
 
         }
         else if (it->prom_c == true){
@@ -183,7 +183,7 @@ echiquier construction_echiquier(Position_Echec& P){
                 promotion->x = it->i2;
                 promotion->y = it->j2;
                 echiquier_final.plateau[it->i2*8+it->j2] = promotion;
-                echiquier_final.plateau[it->i1*8+it->j1] = NULL;
+                echiquier_final.plateau[it->i1*8+it->j1] = nullptr;
 
         }
         else {
@@ -191,6 +191,8 @@ echiquier construction_echiquier(Position_Echec& P){
                 temp->x = it->i2;
                 temp->y = it->j2;
                 echiquier_final.plateau[it->i2*8+it->j2] = temp;
+                //cout<<"&"<<temp<<endl;
+                //cout<<"&&"<<echiquier_final.plateau[it->i1*8+it->j1]<<endl;
                 echiquier_final.plateau[it->i1*8+it->j1] = nullptr;
         }
     }
@@ -311,5 +313,45 @@ bool Position_Echec::test_echec(){
 
 }
 */
+/*
 
+Position_Echec& Position_Echec coup_humain(Position_Echec& p){ //Met le coup joué par le joueur humain dans la liste de coup
+    cout<<"Position de la pièce à jouer ?"<<endl;
+    string pos_int;
+    cin >> pos_int;
+    cout<<"Position finale de la pièce ?"<<endl;
+    char pos_final[2];
+    cin >> pos_final;
+    int i_init;
+    int i_final;
+    int j_init = int(pos_int[1]);
+    int j_final = int(pos_final[1]);
+
+
+    if (pos_int[0]=="A"){ i_init = 0 ;}
+    if (pos_int[0]=="B"){ i_init = 1 ;}
+    if (pos_int[0]=="C"){ i_init = 2 ;}
+    if (pos_int[0]=="D"){ i_init = 3 ;}
+    if (pos_int[0]=="E"){ i_init = 4 ;}
+    if (pos_int[0]=="F"){ i_init = 5 ;}
+    if (pos_int[0]=="G"){ i_init = 6 ;}
+    if (pos_int[0]=="H"){ i_init = 7 ;}
+
+    if (pos_final[0]=="A"){ i_final = 0 ;}
+    if (pos_final[0]=="B"){ i_final = 1 ;}
+    if (pos_final[0]=="C"){ i_final = 2 ;}
+    if (pos_final[0]=="D"){ i_final = 3 ;}
+    if (pos_final[0]=="E"){ i_final = 4 ;}
+    if (pos_final[0]=="F"){ i_final = 5 ;}
+    if (pos_final[0]=="G"){ i_final = 6 ;}
+    if (pos_final[0]=="H"){ i_final = 7 ;}
+
+
+    if (p.echiquier_ref.plateau[i_final*8+j_final] != nullptr){
+        cout<<"Vous mangez une pièce"<<endl;
+        coup_echec coup_joue(p.echiquier_ref.plateau[i_init*8+j_init],p.echiquier_ref.plateau[i_final*8+j_final],i_init,j_init,i_final,j_final);
+        p.Liste_coup.push_back(coup_joue);
+    }
+
+*/
 
