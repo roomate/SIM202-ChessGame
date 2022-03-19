@@ -130,7 +130,15 @@ public:
     ~piece(){
 
     }
-    piece(){}
+    piece(piece& p){
+        x = p.x;
+        y = p.y;
+        Couleur = p.Couleur;
+        P = p.P;
+    }
+
+
+
     piece(PieceType nom_piece, PieceColor couleur, int a, int b){
         if (nom_piece == Roi){
             roi piece;
@@ -194,6 +202,8 @@ public:
             if (p.plateau[i] != nullptr){
                 piece* p_temp = new piece(p.plateau[i]->P.Nom_piece, p.plateau[i]->Couleur,p.plateau[i]->x,p.plateau[i]->y);
                 this->plateau[i] = p_temp;
+            }else if (p.plateau[i]==nullptr) {
+                this->plateau[i] = nullptr;
             }
         }
     }
@@ -203,6 +213,8 @@ public:
             if (p.plateau[i] != nullptr){
                 piece* p_temp = new piece(p.plateau[i]->P.Nom_piece, p.plateau[i]->Couleur,p.plateau[i]->x,p.plateau[i]->y);
                 this->plateau[i] = p_temp;
+            }else if (p.plateau[i]==nullptr){
+                this->plateau[i] = nullptr;
             }
         }
         return *this;
@@ -353,12 +365,12 @@ public:
         prom_d = false;
         prom_c = false;
         prom_t = false;
-        if (nom_coup = "p_rooc"){p_rooc = true;}
-        if (nom_coup = "g_rooc"){g_rooc = true;}
-        if (nom_coup = "prom_f"){prom_f = true;}
-        if (nom_coup = "prom_d"){prom_d = true;}
-        if (nom_coup = "prom_c"){prom_c = true;}
-        if (nom_coup = "prom_t"){prom_t = true;}
+        if (nom_coup == "p_rooc"){p_rooc = true;}
+        if (nom_coup == "g_rooc"){g_rooc = true;}
+        if (nom_coup == "prom_f"){prom_f = true;}
+        if (nom_coup == "prom_d"){prom_d = true;}
+        if (nom_coup == "prom_c"){prom_c = true;}
+        if (nom_coup == "prom_t"){prom_t = true;}
 
     }
 
