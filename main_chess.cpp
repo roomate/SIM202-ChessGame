@@ -16,7 +16,7 @@ piece P(Roi,Blanc,1,2);
 
 
 list<coup_echec> Coups_Liste;
-coup_echec coup1(echiquier_d.plateau[8],1,0,3,1);
+coup_echec coup1(echiquier_d.plateau[8],1,0,3,0);
 coup1.affichage_standard();
 coup_echec coup2(echiquier_d.plateau[51],6,3,4,3);
 coup_echec coup3(echiquier_d.plateau[13],1,5,3,5);
@@ -40,8 +40,8 @@ Position_Echec pos_test(echiquier_d,Blanc,Coups_Liste);
 pos_test.mise_a_jour_position();
 pos_test.echiquier_ref.affichage();
 
-cout<<pos_test.echiquier_ref.plateau[13]->x<<endl;
-cout<<pos_test.echiquier_ref.plateau[29]<<endl;
+//cout<<pos_test.echiquier_ref.plateau[13]->x<<endl;
+//cout<<pos_test.echiquier_ref.plateau[29]->x<<endl;
 
 //pos_test.mise_a_jour_position();
 
