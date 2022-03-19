@@ -436,7 +436,7 @@ public:
 
     Position_Echec& position_possible(){ return *this;} //a def
     double valeur_position() const {return 0;} //a def
-    bool test_echec(){return true;} //a def
+    bool test_echec(); //a def
     bool gagne()const {return true;} //correspond au test d'echec et mat
     Position_Echec& coup_humain();
 
@@ -475,6 +475,8 @@ public:
 echiquier echiquier_depart();
 echiquier echiquier_test_p_rooc();
 echiquier echiquier_test_g_rooc();
+echiquier echiquier_test_prom();
 echiquier construction_echiquier(Position_Echec& P);
+echiquier echiquier_test_echec();
 
 #endif
