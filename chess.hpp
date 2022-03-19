@@ -111,6 +111,7 @@ public:
 		vector<vector<int>> Tableau{{ 0, 1, 0, -1, 1, 1, -1, -1 },
                                     { 1, 0, -1, 0, 1, -1, 1, -1},
                                     { 1, 1, 1, 1, 1, 1, 1, 1 } };
+        Dep_rel=Tableau;
         this->valeur = 0;
 	}
 
