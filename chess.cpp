@@ -114,18 +114,22 @@ echiquier construction_echiquier(Position_Echec& P){
                 echiquier_final.plateau[6] = echiquier_final.plateau[4];
                 echiquier_final.plateau[6]->x = 0;
                 echiquier_final.plateau[6]->y = 6;
+                echiquier_final.plateau[6]->a_bouger = true;
                 echiquier_final.plateau[4] = nullptr;
                 echiquier_final.plateau[5] = echiquier_final.plateau[7];
+                echiquier_final.plateau[5]->a_bouger = true;
                 echiquier_final.plateau[5]->x = 0;
                 echiquier_final.plateau[5]->y = 5;
                 echiquier_final.plateau[7] = nullptr;
             }
             if (it->couleur_c == Noir){
                 echiquier_final.plateau[61] = echiquier_final.plateau[63];
+                echiquier_final.plateau[61]->a_bouger = true;
                 echiquier_final.plateau[61]->x = 7;
                 echiquier_final.plateau[61]->y = 5;
                 echiquier_final.plateau[63] = nullptr;
                 echiquier_final.plateau[62] = echiquier_final.plateau[60];
+                echiquier_final.plateau[62]->a_bouger = true;
                 echiquier_final.plateau[62]->x = 7;
                 echiquier_final.plateau[62]->y = 6;
                 echiquier_final.plateau[60] = nullptr;
@@ -137,18 +141,22 @@ echiquier construction_echiquier(Position_Echec& P){
                 echiquier_final.plateau[2] = echiquier_final.plateau[4];
                 echiquier_final.plateau[2]->x = 0;
                 echiquier_final.plateau[2]->y = 2;
+                echiquier_final.plateau[2]->a_bouger = true;
                 echiquier_final.plateau[4] = nullptr;
                 echiquier_final.plateau[3] = echiquier_final.plateau[0];
+                echiquier_final.plateau[3]->a_bouger = true;
                 echiquier_final.plateau[3]->x = 0;
                 echiquier_final.plateau[3]->y = 3;
                 echiquier_final.plateau[0] = nullptr;
             }
             if (it->couleur_c == Noir){
                 echiquier_final.plateau[59] = echiquier_final.plateau[56];
+                echiquier_final.plateau[59]->a_bouger = true;
                 echiquier_final.plateau[59]->x = 7;
                 echiquier_final.plateau[59]->y = 3;
                 echiquier_final.plateau[56] = nullptr;
                 echiquier_final.plateau[58] = echiquier_final.plateau[60];
+                echiquier_final.plateau[58]->a_bouger = true;
                 echiquier_final.plateau[58]->x = 7;
                 echiquier_final.plateau[58]->y = 2;
                 echiquier_final.plateau[60] = nullptr;
@@ -158,6 +166,7 @@ echiquier construction_echiquier(Position_Echec& P){
         else if (it->prom_f == true){
                 piece* promotion = echiquier_final.plateau[it->i1*8+it->j1];
                 fou type_prom;
+                promotion->a_bouger=true;
                 promotion->P = type_prom;
                 promotion->x = it->i2;
                 promotion->y = it->j2;
@@ -168,6 +177,7 @@ echiquier construction_echiquier(Position_Echec& P){
         else if (it->prom_d == true){
                 piece* promotion = echiquier_final.plateau[it->i1*8+it->j1];
                 dame type_prom;
+                promotion->a_bouger=true;
                 promotion->P = type_prom;
                 promotion->x = it->i2;
                 promotion->y = it->j2;
@@ -178,6 +188,7 @@ echiquier construction_echiquier(Position_Echec& P){
         else if (it->prom_t == true){
                 piece* promotion = echiquier_final.plateau[it->i1*8+it->j1];
                 tour type_prom;
+                promotion->a_bouger=true;
                 promotion->P = type_prom;
                 promotion->x = it->i2;
                 promotion->y = it->j2;
@@ -188,6 +199,7 @@ echiquier construction_echiquier(Position_Echec& P){
         else if (it->prom_c == true){
                 piece* promotion = echiquier_final.plateau[it->i1*8+it->j1];
                 cavalier type_prom;
+                promotion->a_bouger=true;
                 promotion->P = type_prom;
                 promotion->x = it->i2;
                 promotion->y = it->j2;
@@ -199,6 +211,7 @@ echiquier construction_echiquier(Position_Echec& P){
                 piece* temp = echiquier_final.plateau[it->i1*8+it->j1];
                 temp->x = it->i2;
                 temp->y = it->j2;
+                temp->a_bouger=true;
                 echiquier_final.plateau[it->i2*8+it->j2] = temp;
                 //cout<<"&"<<temp<<endl;
                 //cout<<"&&"<<echiquier_final.plateau[it->i1*8+it->j1]<<endl;
@@ -232,10 +245,10 @@ Position_Echec& Position_Echec::mise_a_jour_position(){ //Met à jour l'echiquie
 }
 
 //Mise en commentaire en attendant d'avoir créer test echec
+/*
+double Position_Echec::valeur_position()const{
 
-double Position_Echec::valeur_position(){
-    this->mise_a_jour_position();
-    echiquier echiquier_final = construction_echiquier(*this);
+
     int cont_blanc = 0;
     int cont_noir = 0;
     int val_blanc = 0;
@@ -260,7 +273,7 @@ double Position_Echec::valeur_position(){
         return val;
     }
 }
-
+*/
 
 bool Position_Echec::test_echec(){
     PieceColor turn = couleur_joueur; // Recuperer la couleur du joueur
@@ -369,6 +382,72 @@ echiquier echiquier_depart(){
     return E;
 }
 
+bool Position_Echec::test_p_rooc(){
+    if (this->couleur_joueur== Blanc){
+        if(this->echiquier_ref.plateau[7]!=nullptr && this->echiquier_ref.plateau[4]!=nullptr ){
+            if(this->echiquier_ref.plateau[7]->P.Nom_piece==Tour && this->echiquier_ref.plateau[4]->P.Nom_piece==Roi){
+                if(this->echiquier_ref.plateau[7]->Couleur==Blanc && this->echiquier_ref.plateau[4]->Couleur==Blanc){
+                    if(this->echiquier_ref.plateau[7]->a_bouger==false && this->echiquier_ref.plateau[4]->a_bouger==false){
+                        if (this->test_echec()==false){
+                               return(true);
+                        }
+                    }
+                }
+            }
+        }
+        return(false);
+    }
+    if (this->couleur_joueur==Noir){
+        if(this->echiquier_ref.plateau[63]!=nullptr && this->echiquier_ref.plateau[60]!=nullptr ){
+            if(this->echiquier_ref.plateau[63]->P.Nom_piece==Tour && this->echiquier_ref.plateau[60]->P.Nom_piece==Roi){
+                if(this->echiquier_ref.plateau[63]->Couleur==Noir && this->echiquier_ref.plateau[60]->Couleur==Noir){
+                    if(this->echiquier_ref.plateau[63]->a_bouger==false && this->echiquier_ref.plateau[60]->a_bouger==false){
+                        if (this->test_echec()==false){
+                            return(true);
+                        }
+                    }
+                }
+            }
+        }
+        return(false);
+    }
+    return(false);
+
+}
+
+bool Position_Echec::test_g_rooc(){
+    if (this->couleur_joueur== Blanc){
+        if(this->echiquier_ref.plateau[0]!=nullptr && this->echiquier_ref.plateau[4]!=nullptr ){
+            if(this->echiquier_ref.plateau[0]->P.Nom_piece==Tour && this->echiquier_ref.plateau[4]->P.Nom_piece==Roi){
+                if(this->echiquier_ref.plateau[0]->Couleur==Blanc && this->echiquier_ref.plateau[4]->Couleur==Blanc){
+                    if(this->echiquier_ref.plateau[0]->a_bouger==false && this->echiquier_ref.plateau[4]->a_bouger==false){
+                        if (this->test_echec()==false){
+                            return(true);
+                        }
+                    }
+                }
+            }
+        }
+        return(false);
+    }
+    if (this->couleur_joueur==Noir){
+        if(this->echiquier_ref.plateau[56]!=nullptr && this->echiquier_ref.plateau[60]!=nullptr ){
+            if(this->echiquier_ref.plateau[56]->P.Nom_piece==Tour && this->echiquier_ref.plateau[60]->P.Nom_piece==Roi){
+                if(this->echiquier_ref.plateau[56]->Couleur==Noir && this->echiquier_ref.plateau[60]->Couleur==Noir){
+                    if(this->echiquier_ref.plateau[56]->a_bouger==false && this->echiquier_ref.plateau[60]->a_bouger==false){
+                        if (this->test_echec()==false){
+                            return(true);
+                        }
+                    }
+                }
+            }
+        }
+        return(false);
+    }
+
+    return(false);
+
+}
 
 echiquier echiquier_test_p_rooc(){
     echiquier E;
@@ -731,5 +810,14 @@ Position_Echec& Position_Echec::coup_humain(){ //Met le coup joué par le joueur
 
 Position_Echec& Position_Echec::position_possible()
 {
+
+
+
+
+
+
+
+
+
 
 }
