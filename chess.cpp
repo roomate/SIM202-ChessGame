@@ -348,7 +348,7 @@ bool Position_Echec::test_echec_mat(){
     }
     else{
             PieceColor turn = PieceColor(joueur);// Recuperer la couleur du joueur
-            (*this).position_possible();
+           // (*this).position_possible();
             Position_Echec* pFilles= dynamic_cast<Position_Echec*>(this->fille);
             while (pFilles != nullptr){
                 pFilles->couleur_joueur = turn;
