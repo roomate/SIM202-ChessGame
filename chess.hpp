@@ -127,6 +127,7 @@ public:
     PieceColor Couleur;
     int x;
     int y;
+    bool a_bouger = false;
     //Constructeur de la classe
     ~piece(){
 
@@ -136,6 +137,7 @@ public:
         y = p.y;
         Couleur = p.Couleur;
         P = p.P;
+        a_bouger = p.a_bouger;
     }
 
 
@@ -439,6 +441,9 @@ public:
     double valeur_position() const {return 0;} //a def
     bool test_echec(); //a def
     bool gagne()const {return true;} //correspond au test d'echec et mat
+    bool test_p_rooc();
+    bool test_g_rooc();
+
     Position_Echec& coup_humain();
 
     ~Position_Echec(){              //def du destrcuteur
@@ -479,5 +484,6 @@ echiquier echiquier_test_g_rooc();
 echiquier echiquier_test_prom();
 echiquier construction_echiquier(Position_Echec& P);
 echiquier echiquier_test_echec();
+
 
 #endif
