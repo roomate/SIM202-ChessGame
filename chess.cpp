@@ -859,7 +859,7 @@ Position_Echec& Position_Echec::position_possible()
     bool presence; //Ce booléen est fait pour les pieces pouvant se déplacer sur plusieurs cases : si sur le chemin on a un allié, on ne peut pas allé plus loin
     for (int i = 0; i < 8; ++i)
     { //On se balade dans les lignes
-        for (int j = 1; j < 8; ++j)
+        for (int j = 7; j < 8; ++j)
         { //On se balade dans les colonnes
             piece* Pc= this->echiquier_ref.plateau[8*i+j]; //Piece qui se trouve dans cette emplacement
             if (Pc != nullptr && Pc->Couleur==turn)
@@ -868,7 +868,7 @@ Position_Echec& Position_Echec::position_possible()
                 if (Pc->P.Nom_piece != Pion && Pc->P.Nom_piece != Roi)//Si la piece n'est pas un pion
                  {
                      int b = Dep[0].size();
-                     for(int l = 2; l<b; l++)
+                     for(int l = 0; l<b; l++)
                     {
                         presence = false;
                         if (Dep[2][l]==1)
@@ -1422,7 +1422,7 @@ Position_Echec& Position_Echec::position_possible()
                 }
                 else if (Pc->P.Nom_piece == Roi) //Si on bouge le roi
                 {
-                    for (int l = 0; l<Dep[0].size(); i++) //Grace à sa matrice de mouvement
+                    for (int l = 0; l<8; i++) //Grace à sa matrice de mouvement
                     {
                         if (0<= i + Dep[0][l] && i + Dep[0][l]  < 8 && 0<= j + Dep[1][l] && j + Dep[1][l]<8)
                         {
@@ -1441,7 +1441,7 @@ Position_Echec& Position_Echec::position_possible()
                                     this->fille = nouvelle_soeur;
                                 }
                             }
-                            else if (actuel != nullptr && actuel->Couleur != Pc->Couleur)
+                            else if (actuel != nullptr && actuel->Couleur != Pc->Couleur) //Si le roi mange un truc sna
                             {
                                 coup_echec C(Pc,actuel, i, j, i + Dep[0][l], j + Dep[1][l]);
                                 Position_Echec* nouvelle_soeur = new Position_Echec;
