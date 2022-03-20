@@ -275,30 +275,36 @@ double Position_Echec::valeur_position()const{
 }
 */
 
+
 bool Position_Echec::test_echec(){
     PieceColor turn = couleur_joueur; // Recuperer la couleur du joueur
-    cout << turn << endl;
+    //cout << turn << endl;
     int m; // Pour les deplacements relatifs non limités
     //echiquier echiquier_final = construction_echiquier(*this); // Construire echiquier
-    //(*this).mise_a_jour_position(); //Pas besoin de le mettre dans cette fonction on le fera à part
-    int pos_x_roi;
-    int pos_y_roi;
+   // (*this).mise_a_jour_position();
+    int pos_x_roi=0;
+    int pos_y_roi=0;
     vector<vector<int>> Dep;
-    for(int i = 0; i<64;i++){ // Récupérer la position du Roi du joueur
-        if ((echiquier_ref.plateau[i]->P.Nom_piece == Roi) &&
-            (echiquier_ref.plateau[i]->Couleur == turn)){
+    for (int i = 0; i<64; i++){
+        //for (int j=0; j<8; j++){ // Récupérer la position du Roi du joueur
+        if ((echiquier_ref.plateau[i]!= nullptr) && (echiquier_ref.plateau[i]->P.Nom_piece == Roi) && (echiquier_ref.plateau[i]->Couleur == turn)){ //&& (echiquier_d.plateau[i]!= nullptr)){
            // cout << i<< endl;
            //cout << (*echiquier_ref.plateau[i]).string_type()<< endl;
-            pos_x_roi = echiquier_ref.plateau[i]->x;
-            pos_y_roi = echiquier_ref.plateau[i]->y;
+            pos_x_roi = (*echiquier_ref.plateau[i]).x;
+            pos_y_roi = (*echiquier_ref.plateau[i]).y;
+            }
+          //  break;}
+
         }
-    }
-    for (int i = 0; i < 8; ++i) {
-        for (int j = 0; j < 8; ++j) {
+
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 8; j++) {
                 if (((echiquier_ref.plateau[8*i+j])!=nullptr) &&
-                    (echiquier_ref.plateau[i]->Couleur != turn)) {// Rechercher les pieces adverses sur le plateau
+                    (echiquier_ref.plateau[8*i+j]->Couleur != turn)) {// Rechercher les pieces adverses sur le plateau
                         piece* Pad= echiquier_ref.plateau[8*i+j]; // Récupérer la piece adverse
+                     //   cout << (*Pad).string_type() <<endl;
                         Dep= (Pad->P).Dep_rel; // Dep relatif du type de la piece
+                        //cout << Dep[0][0] << endl;
                         if ((Pad->P).Nom_piece!= Pion ){    // Si c'est pas un pion pas besoin de savoir s'il a bougé ou pas
                             for(int l = 0; l<Dep[1].size(); l++){
                                 if (Dep[2][l] == 1){
@@ -307,8 +313,11 @@ bool Position_Echec::test_echec(){
                                     }}
                                 if (Dep[2][l] == 0){
                                     m=1;
-                                    while ( (echiquier_ref.plateau[8*(i + m*Dep[0][l]) + j + m*Dep[1][l]]== nullptr) && (m<8)){
-                                        if ( (i + m*Dep[0][l]== pos_x_roi) && (j + m*Dep[1][l]== pos_y_roi) ){
+                                    if ( (i + (m)*Dep[0][l]== pos_x_roi) && (j + (m)*Dep[1][l]== pos_y_roi) ){
+                                            return true;
+                                        }
+                                    while (  (echiquier_ref.plateau[8*(i + m*Dep[0][l]) + j + m*Dep[1][l]]== nullptr) && (m<7)){
+                                        if ( (i + (m+1)*Dep[0][l]== pos_x_roi) && (j + (m+1)*Dep[1][l]== pos_y_roi) ){
                                             return true;
                                         }
                                     m=m+1;
@@ -318,17 +327,13 @@ bool Position_Echec::test_echec(){
                         }
                         else { // Sinon si c'est un pion
                             for(int l = 1 ; l<Dep[1].size() -1; l++){ // Toutes les possibilités du Dep relatif diag
-                                if ( (i + Dep[0][l]== pos_x_roi) && (j + Dep[1][l]== pos_y_roi) && (turn==Blanc) ){
+                                if ( (i + Dep[0][l]== pos_x_roi) && (j + Dep[1][l]== pos_y_roi) && (Pad->Couleur==Blanc) ){
                                     return true;
                                 }
-                                else if ( (i + Dep[0][l]== pos_x_roi) && (j - Dep[1][l]== pos_y_roi) && (turn==Noir) ){
+                                else if ( (i - Dep[0][l]== pos_x_roi) && (j + Dep[1][l]== pos_y_roi) && (Pad->Couleur ==Noir) ){
                                     return true;
                                 }
-                                /*if (Pad->a_bouger == false){ // Cas où il n'a pas bougé
-                                    if ( (i == pos_x_roi) && (j + 2 == pos_y_roi) && ( echiquier_final.plateau[8*i + j + 1] == nullptr) ){
-                                        return true;
-                                    }
-                                }*/
+                                
                             }
                         }
                    }
@@ -336,6 +341,26 @@ bool Position_Echec::test_echec(){
         }
         return false;
 }
+
+bool Position_Echec::test_echec_mat(){
+    if ((*this).test_echec() == false){
+        return false;
+    }
+    else{
+            PieceColor turn = PieceColor(joueur);// Recuperer la couleur du joueur
+            (*this).position_possible();
+            Position_Echec* pFilles= dynamic_cast<Position_Echec*>(this->fille);
+            while (pFilles != nullptr){
+                pFilles->couleur_joueur = turn;
+                if ((*pFilles).test_echec() == false) {
+                    return false;
+                }
+                pFilles= dynamic_cast<Position_Echec*>(pFilles->soeur);
+            }
+    return true;
+
+}}
+
 
 echiquier echiquier_depart(){
     echiquier E;
