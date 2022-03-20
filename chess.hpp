@@ -440,7 +440,7 @@ public:
     Position_Echec& position_possible(); //a def
     double valeur_position() const {return 0;} //a def
     bool test_echec(); //a def
-    bool gagne()const {return true;} //correspond au test d'echec et mat
+    bool test_echec_mat(); //correspond au test d'echec et mat
     bool test_p_rooc();
     bool test_g_rooc();
 
