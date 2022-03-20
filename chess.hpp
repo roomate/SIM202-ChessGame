@@ -21,7 +21,7 @@ class Position
 public:
     int joueur;
     Position(int J) : joueur(J) {}
-    virtual double valeur_position() const =0;
+    virtual double valeur_position() ;
     Position* fille = NULL;
     Position* soeur = NULL;
     Position(){};
@@ -456,7 +456,7 @@ public:
     }
 
     Position_Echec& position_possible(); //a def
-    double valeur_position() const {return 0;} //a def
+    double valeur_position() ; //a def
     bool test_echec(); 
     bool gagne()const {return true;} //correspond au test d'echec et mat
     bool test_p_rooc();
