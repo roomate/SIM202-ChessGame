@@ -435,7 +435,7 @@ public:
         //Liste_coup = new coup_echec[10];
     }
 
-    Position_Echec& position_possible(){ return *this;} //a def
+    Position_Echec& position_possible(); //a def
     double valeur_position() const {return 0;} //a def
     bool test_echec(); //a def
     bool gagne()const {return true;} //correspond au test d'echec et mat
