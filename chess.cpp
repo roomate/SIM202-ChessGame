@@ -244,9 +244,7 @@ Position_Echec& Position_Echec::mise_a_jour_position(){ //Met à jour l'echiquie
     return *this;
 }
 
-//Mise en commentaire en attendant d'avoir créer test echec
-/*
-double Position_Echec::valeur_position()const{
+double Position_Echec::valeur_position(){
 
 
     int cont_blanc = 0;
@@ -260,20 +258,20 @@ double Position_Echec::valeur_position()const{
         return 0;
     } else {
         for(int i = 0; i<64;i++){
-            if (echiquier_final.plateau[i] != NULL)
-                if (echiquier_final.plateau[i]->Couleur = Blanc){
+            if (this->echiquier_ref.plateau[i] != NULL)
+                if (this->echiquier_ref.plateau[i]->Couleur = Blanc){
                     cont_blanc = cont_blanc +1;
-                    val_blanc = val_blanc + echiquier_final.plateau[i]->P.valeur;
-                } else if (echiquier_final.plateau[i]->Couleur = Noir){
+                    val_blanc = val_blanc + this->echiquier_ref.plateau[i]->P.valeur;
+                } else if (this->echiquier_ref.plateau[i]->Couleur = Noir){
                     cont_noir = cont_noir +1;
-                    val_noir = val_noir + echiquier_final.plateau[i]->P.valeur;
+                    val_noir = val_noir + this->echiquier_ref.plateau[i]->P.valeur;
                 }
         }
         val = alpha *(val_blanc - val_noir) + beta*(cont_blanc - cont_noir);
         return val;
     }
 }
-*/
+
 
 
 bool Position_Echec::test_echec(){
