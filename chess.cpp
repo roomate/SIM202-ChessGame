@@ -229,11 +229,11 @@ Position_Echec& Position_Echec::mise_a_jour_position(){ //Met à jour l'echiquie
     enum PieceColor Dernier_joueur = this->Dernier_coup.couleur_c;
     if (Dernier_joueur == Blanc){
         this->couleur_joueur = Noir;
-        cout<<"c'est maintenant au joueur noir de jouer"<<endl;
+        //cout<<"c'est maintenant au joueur noir de jouer"<<endl;
     }
     if (Dernier_joueur == Noir){
         this->couleur_joueur = Blanc;
-        cout<<"c'est maintenant au joueur blanc de jouer"<<endl;
+        //cout<<"c'est maintenant au joueur blanc de jouer"<<endl;
     }
 
     echiquier_ref = construction_echiquier(*this); //Mise à jour de l'echiquier
