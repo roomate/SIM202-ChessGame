@@ -6,8 +6,6 @@
 #include <vector>
 #include <list>
 
-#include "class_position.hpp"
-
 using namespace std;
 
 enum PieceColor {
@@ -15,6 +13,22 @@ enum PieceColor {
 };
 enum PieceType {
 	Pion, Tour, Fou, Cavalier, Dame, Roi
+};
+
+
+class Position
+{
+public:
+    int joueur;
+    Position(int J) : joueur(J) {}
+    virtual double valeur_position() const =0;
+    Position* fille = NULL;
+    Position* soeur = NULL;
+    Position(){};
+    virtual ~Position(){};
+    virtual Position& position_possible() = 0;
+    virtual void print_position() const = 0;
+    virtual bool gagne() const = 0;
 };
 
 class type_piece{
@@ -34,11 +48,7 @@ public:
 	pion() {
 		this->Nom_piece = Pion;
 		this->valeur = 100;
-		vector<vector<int>> Tableau{ { 0, 1, 1, 0 },
-                                     { 1, 1, -1, 2 },
-                                     { 1, 1, 1, 1 } };
-
-		this->Dep_rel= Tableau;
+		//int Tableau [][]
 	}
 
 
@@ -443,8 +453,8 @@ public:
 
     Position_Echec& position_possible(); //a def
     double valeur_position() const {return 0;} //a def
-    bool test_echec(); //a def
-    bool test_echec_mat(); //correspond au test d'echec et mat
+    bool test_echec(); 
+    bool gagne()const {return true;} //correspond au test d'echec et mat
     bool test_p_rooc();
     bool test_g_rooc();
 
@@ -455,6 +465,7 @@ public:
     }
 
     bool test_match_nul();
+    bool test_echec_mat();
     void print_position()const {cout<<"à faire"<<endl;} //à définir
     Position_Echec& mise_a_jour_position();
 
