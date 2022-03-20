@@ -14,7 +14,9 @@ const int MIN = -1000;
 
 void echiquier::affichage(){
 
+    string alphat("ABCDEFGH");
     for (int i = 7; i>=0; i--){
+        cout<<8 - i<<"   ";
         for (int j=0; j<8; j++){
             if (plateau[i*8+j] != nullptr){
                 cout<<plateau[i*8+j]->string_type()<<(plateau[i*8+j]->Couleur==Blanc?"b":"n")<<"  ";
@@ -24,6 +26,12 @@ void echiquier::affichage(){
         }
         cout<<endl;
     }
+    cout<<"    ";
+    for (int i = 0; i < 8; i++)
+    {
+        cout<<alphat[7 - i]<<"   ";
+    }
+    cout<<endl;
 }
 
 
@@ -223,7 +231,7 @@ Position_Echec& Position_Echec::mise_a_jour_position(){ //Met à jour l'echiquie
     return *this;
 }
 
-/* Mise en commentaire en attendant d'avoir créer test echec
+//Mise en commentaire en attendant d'avoir créer test echec
 
 double Position_Echec::valeur_position(){
     this->mise_a_jour_position();
@@ -253,7 +261,6 @@ double Position_Echec::valeur_position(){
     }
 }
 
-*/
 
 bool Position_Echec::test_echec(){
     PieceColor turn = couleur_joueur; // Recuperer la couleur du joueur
@@ -472,7 +479,15 @@ echiquier echiquier_test_prom(){
 }
 
 echiquier echiquier_test_echec(){
+    echiquier E;
 
+    piece* P_4= new piece(Roi,Blanc,0,4);
+    E.plateau[4]= P_4;
+
+    piece* P_59= new piece(Dame,Noir,7,4);
+    E.plateau[60]= P_59;
+
+    return E;
 }
 
 
@@ -714,4 +729,7 @@ Position_Echec& Position_Echec::coup_humain(){ //Met le coup joué par le joueur
 }
 
 
+Position_Echec& Position_Echec::position_possible()
+{
 
+}
