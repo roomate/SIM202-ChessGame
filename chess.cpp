@@ -285,15 +285,13 @@ bool Position_Echec::test_echec(){
     int pos_x_roi=0;
     int pos_y_roi=0;
     vector<vector<int>> Dep;
-    for (int i = 0; i<64; i++){
-        //for (int j=0; j<8; j++){ // Récupérer la position du Roi du joueur
+    for (int i = 0; i<64; i++){ // Récupérer la position du Roi du joueur
         if ((echiquier_ref.plateau[i]!= nullptr) && (echiquier_ref.plateau[i]->P.Nom_piece == Roi) && (echiquier_ref.plateau[i]->Couleur == turn)){ //&& (echiquier_d.plateau[i]!= nullptr)){
-           // cout << i<< endl;
-           //cout << (*echiquier_ref.plateau[i]).string_type()<< endl;
+           
             pos_x_roi = (*echiquier_ref.plateau[i]).x;
             pos_y_roi = (*echiquier_ref.plateau[i]).y;
             }
-          //  break;}
+          
 
         }
 
@@ -361,6 +359,24 @@ bool Position_Echec::test_echec_mat(){
 
 }}
 
+bool Position_Echec::test_match_nul(){
+    if ((*this).test_echec() == true){
+        return false;
+    }
+    else{
+            PieceColor turn = PieceColor(joueur);// Recuperer la couleur du joueur
+            //(*this).position_possible();
+            Position_Echec* pFilles= dynamic_cast<Position_Echec*>(this->fille);
+            while (pFilles != nullptr){
+                pFilles->couleur_joueur = turn;
+                if ((*pFilles).test_echec() == false) {
+                    return false;
+                }
+                pFilles= dynamic_cast<Position_Echec*>(pFilles->soeur);
+            }
+    return true;
+
+}}
 
 echiquier echiquier_depart(){
     echiquier E;
