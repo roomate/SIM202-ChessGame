@@ -21,7 +21,7 @@ class Position
 public:
     int joueur;
     Position(int J) : joueur(J) {}
-    virtual double valeur_position() ;
+    virtual double valeur_position() =0;
     Position* fille = NULL;
     Position* soeur = NULL;
     Position(){};
@@ -456,8 +456,8 @@ public:
     }
 
     Position_Echec& position_possible(); //a def
-    double valeur_position() ; //a def
-    bool test_echec(); 
+    double valeur_position() const {return 0;} //a def
+    bool test_echec();
     bool gagne()const {return true;} //correspond au test d'echec et mat
     bool test_p_rooc();
     bool test_g_rooc();
@@ -472,6 +472,7 @@ public:
     bool test_echec_mat();
     void print_position()const {cout<<"à faire"<<endl;} //à définir
     Position_Echec& mise_a_jour_position();
+    double valeur_position();
 
     //Constructeur
     Position_Echec(echiquier& E, PieceColor C, list<coup_echec> L){
@@ -503,6 +504,10 @@ echiquier echiquier_test_g_rooc();
 echiquier echiquier_test_prom();
 echiquier construction_echiquier(Position_Echec& P);
 echiquier echiquier_test_echec();
+echiquier echiquier_test_echec_mat();
+echiquier echiquier_piece();
+
+int minimax(Position &P, int alpha, int beta, int depth);
 
 
 #endif
