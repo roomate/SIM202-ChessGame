@@ -285,11 +285,11 @@ bool Position_Echec::test_echec(){
     vector<vector<int>> Dep;
     for (int i = 0; i<64; i++){ // Récupérer la position du Roi du joueur
         if ((echiquier_ref.plateau[i]!= nullptr) && (echiquier_ref.plateau[i]->P.Nom_piece == Roi) && (echiquier_ref.plateau[i]->Couleur == turn)){ //&& (echiquier_d.plateau[i]!= nullptr)){
-           
+
             pos_x_roi = (*echiquier_ref.plateau[i]).x;
             pos_y_roi = (*echiquier_ref.plateau[i]).y;
             }
-          
+
 
         }
 
@@ -329,7 +329,7 @@ bool Position_Echec::test_echec(){
                                 else if ( (i - Dep[0][l]== pos_x_roi) && (j + Dep[1][l]== pos_y_roi) && (Pad->Couleur ==Noir) ){
                                     return true;
                                 }
-                                
+
                             }
                         }
                    }
@@ -422,8 +422,6 @@ echiquier echiquier_depart(){
 }
 
 
-
-}
 
 bool Position_Echec::test_p_rooc(){
     if (this->couleur_joueur== Blanc){
@@ -612,6 +610,99 @@ echiquier echiquier_test_echec(){
     return E;
 }
 
+echiquier echiquier_test_echec_mat()
+{
+    echiquier E;
+
+    piece* P_4= new piece(Roi,Blanc,0,4);
+    E.plateau[4]= P_4;
+
+    piece* P_59= new piece(Dame,Noir,7,4);
+    E.plateau[60]= P_59;
+    piece* P_9= new piece(Tour,Noir,5,3);
+    E.plateau[43]= P_9;
+
+    piece* PT = new piece(Tour, Noir, 6, 5);
+    E.plateau[53]= PT;
+    return E;
+}
+
+echiquier echiquier_piece()
+{
+    echiquier E;
+    piece* dame = new piece(Roi,Blanc,4,0);
+    piece* pion = new piece(Pion ,Blanc, 4,1);
+    E.plateau[36] = dame;
+    E.plateau[37] = pion;
+    return E;
+}
+
+// Profondeur en argument
+int minimax(Position &P, int alpha, int beta, int depth)
+{
+//    Position* pP=&P;
+//    cout<<"         debut           "<<endl;
+//    cout<<"         ======          "<<endl;
+//    P.print_position();
+    P.position_possible();
+    Position* pFilles= P.fille;
+    int a = alpha;
+    int b = beta;
+//	 Terminating condition. i.e
+//	 leaf node is reached
+	if ( pFilles == nullptr || depth == 0) {
+//        cout<<"Valeur de la position finale "<<a<<endl;
+		return P.valeur_position();
+	}
+    if (P.joueur == 1)
+    {
+        int best = MIN;
+
+//        First child
+//        pP=P.fille;
+
+        int val = minimax(*pFilles, a, b, depth-1);
+        best = max(best, val);
+//          Recur for her sisters
+
+        while (pFilles->soeur!=NULL)
+        {
+            Position* pS=pFilles->soeur;
+            if (pS->gagne()) {return pS->valeur_position();}
+            int val = minimax(*(pS), a, b, depth-1);
+            best = max(best, val);
+            pFilles=pS;
+            alpha = max(alpha, best);
+
+    /*        // Alpha Beta Pruning
+            if (beta <= alpha)
+                break;              */
+        }
+        return best;
+        }
+    else
+    {
+        int best = MAX;
+
+//          first child
+//        pP=P.fille;
+        int val = minimax(*pFilles, a, b, depth-1);
+        best = min(best, val);
+          //Recur for her sisters
+
+        while (pFilles->soeur!=NULL)
+        {   Position* pS=pFilles->soeur;
+            int val = minimax(*(pS), a, b, depth-1);
+            best = min(best, val);
+            pFilles=pS;
+            beta = min(alpha, best);
+      /*      // Alpha Beta Pruning
+            if (beta <= alpha)
+                break;              */
+        }
+        return best;
+    }
+}
 
 
 Position_Echec& Position_Echec::coup_humain(){ //Met le coup joué par le joueur humain dans la liste de coup
@@ -857,7 +948,7 @@ Position_Echec& Position_Echec::position_possible()
     bool presence; //Ce booléen est fait pour les pieces pouvant se déplacer sur plusieurs cases : si sur le chemin on a un allié, on ne peut pas allé plus loin
     for (int i = 0; i < 8; ++i)
     { //On se balade dans les lignes
-        for (int j = 7; j < 8; ++j)
+        for (int j = 0; j < 8; ++j)
         { //On se balade dans les colonnes
             piece* Pc= this->echiquier_ref.plateau[8*i+j]; //Piece qui se trouve dans cette emplacement
             if (Pc != nullptr && Pc->Couleur==turn)
@@ -904,6 +995,8 @@ Position_Echec& Position_Echec::position_possible()
                         else //Si la pièce peut se balader sur plusieurs cases
                         {
                             presence = false;
+                            int z = Dep[1][l];
+                            int y = Dep[0][l];
                             int k = 1;
                             while (0 <= i + k*Dep[0][l] && i + k*Dep[0][l]< 8 && 0 <= j + k*Dep[1][l] && j + k*Dep[1][l]< 8 && presence == false)
                             {
@@ -920,6 +1013,7 @@ Position_Echec& Position_Echec::position_possible()
                                     nouvelle_soeur->Liste_coup.push_back(C); //Grace au coup echec qu'on a enregistré
                                     nouvelle_soeur->soeur = this->fille;
                                     this->fille = nouvelle_soeur;
+                                    ++k;
                                 }
                                 else if (actuel->Couleur != turn && actuel->P.Nom_piece!=Roi) //Une piece est sur le chemin : ce n'est ni une pièce allié, ni le roi
                                 {
@@ -932,12 +1026,12 @@ Position_Echec& Position_Echec::position_possible()
                                     nouvelle_soeur->Liste_coup.push_back(C); //Grace au coup echec qu'on a enregistré
                                     nouvelle_soeur->soeur = this->fille;
                                     this->fille = nouvelle_soeur;
+                                    ++k;
                                 }
                                 else if (actuel->Couleur == turn)
                                 {
                                     presence = true;
                                 }
-                                ++k;
                             }
                         }
                     }
@@ -1420,7 +1514,7 @@ Position_Echec& Position_Echec::position_possible()
                 }
                 else if (Pc->P.Nom_piece == Roi) //Si on bouge le roi
                 {
-                    for (int l = 0; l<8; i++) //Grace à sa matrice de mouvement
+                    for (int l = 0; l<8; l++) //Grace à sa matrice de mouvement
                     {
                         if (0<= i + Dep[0][l] && i + Dep[0][l]  < 8 && 0<= j + Dep[1][l] && j + Dep[1][l]<8)
                         {
@@ -1457,29 +1551,29 @@ Position_Echec& Position_Echec::position_possible()
                     }
                 }
             }
-            if (this->test_g_rooc()) //Test du grand rooc
-            {
-                Position_Echec* nouvelle_soeur = new Position_Echec;
-                nouvelle_soeur->couleur_joueur = turn;
-                coup_echec C("g_rooc", Pc->Couleur);
-                nouvelle_soeur->echiquier_ref = echiquier_ref;
-                nouvelle_soeur->soeur = this->fille;
-                this->fille = nouvelle_soeur;
-                nouvelle_soeur->Liste_coup = Liste_coup;
-                nouvelle_soeur->Liste_coup.push_back(C);
-            }
-            else if (this->test_p_rooc()) //Test du petit rooc
-            {
-                Position_Echec* nouvelle_soeur = new Position_Echec;
-                nouvelle_soeur->couleur_joueur = turn;
-                coup_echec C("p_rooc", Pc->Couleur);
-                nouvelle_soeur->echiquier_ref = echiquier_ref;
-                nouvelle_soeur->Liste_coup = Liste_coup;
-                nouvelle_soeur->soeur = this->fille;
-                this->fille = nouvelle_soeur;
-                nouvelle_soeur->Liste_coup.push_back(C);
-            }
         }
+    }
+    if (this->test_g_rooc()) //Test du grand rooc
+    {
+        Position_Echec* nouvelle_soeur = new Position_Echec;
+        nouvelle_soeur->couleur_joueur = turn;
+        coup_echec C("g_rooc", turn);
+        nouvelle_soeur->echiquier_ref = echiquier_ref;
+        nouvelle_soeur->soeur = this->fille;
+        this->fille = nouvelle_soeur;
+        nouvelle_soeur->Liste_coup = Liste_coup;
+        nouvelle_soeur->Liste_coup.push_back(C);
+    }
+    else if (this->test_p_rooc()) //Test du petit rooc
+    {
+        Position_Echec* nouvelle_soeur = new Position_Echec;
+        nouvelle_soeur->couleur_joueur = turn;
+        coup_echec C("p_rooc", turn);
+        nouvelle_soeur->echiquier_ref = echiquier_ref;
+        nouvelle_soeur->Liste_coup = Liste_coup;
+        nouvelle_soeur->soeur = this->fille;
+        this->fille = nouvelle_soeur;
+        nouvelle_soeur->Liste_coup.push_back(C);
     }
     return *this;
 }
