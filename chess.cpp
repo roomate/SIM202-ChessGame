@@ -423,9 +423,13 @@ echiquier echiquier_depart(){
     return E;
 }
 
+
+
+}
+
 bool Position_Echec::test_p_rooc(){
     if (this->couleur_joueur== Blanc){
-        if(this->echiquier_ref.plateau[7]!=nullptr && this->echiquier_ref.plateau[4]!=nullptr ){
+        if(this->echiquier_ref.plateau[7]!=nullptr && this->echiquier_ref.plateau[4]!=nullptr && this->echiquier_ref.plateau[5]==nullptr && this->echiquier_ref.plateau[6]==nullptr ){
             if(this->echiquier_ref.plateau[7]->P.Nom_piece==Tour && this->echiquier_ref.plateau[4]->P.Nom_piece==Roi){
                 if(this->echiquier_ref.plateau[7]->Couleur==Blanc && this->echiquier_ref.plateau[4]->Couleur==Blanc){
                     if(this->echiquier_ref.plateau[7]->a_bouger==false && this->echiquier_ref.plateau[4]->a_bouger==false){
@@ -439,7 +443,7 @@ bool Position_Echec::test_p_rooc(){
         return(false);
     }
     if (this->couleur_joueur==Noir){
-        if(this->echiquier_ref.plateau[63]!=nullptr && this->echiquier_ref.plateau[60]!=nullptr ){
+        if(this->echiquier_ref.plateau[63]!=nullptr && this->echiquier_ref.plateau[60]!=nullptr && this->echiquier_ref.plateau[61]==nullptr && this->echiquier_ref.plateau[62]==nullptr ){
             if(this->echiquier_ref.plateau[63]->P.Nom_piece==Tour && this->echiquier_ref.plateau[60]->P.Nom_piece==Roi){
                 if(this->echiquier_ref.plateau[63]->Couleur==Noir && this->echiquier_ref.plateau[60]->Couleur==Noir){
                     if(this->echiquier_ref.plateau[63]->a_bouger==false && this->echiquier_ref.plateau[60]->a_bouger==false){
@@ -458,7 +462,7 @@ bool Position_Echec::test_p_rooc(){
 
 bool Position_Echec::test_g_rooc(){
     if (this->couleur_joueur== Blanc){
-        if(this->echiquier_ref.plateau[0]!=nullptr && this->echiquier_ref.plateau[4]!=nullptr ){
+        if(this->echiquier_ref.plateau[0]!=nullptr && this->echiquier_ref.plateau[4]!=nullptr && this->echiquier_ref.plateau[1]==nullptr && this->echiquier_ref.plateau[2]==nullptr && this->echiquier_ref.plateau[3]==nullptr ){
             if(this->echiquier_ref.plateau[0]->P.Nom_piece==Tour && this->echiquier_ref.plateau[4]->P.Nom_piece==Roi){
                 if(this->echiquier_ref.plateau[0]->Couleur==Blanc && this->echiquier_ref.plateau[4]->Couleur==Blanc){
                     if(this->echiquier_ref.plateau[0]->a_bouger==false && this->echiquier_ref.plateau[4]->a_bouger==false){
@@ -472,7 +476,7 @@ bool Position_Echec::test_g_rooc(){
         return(false);
     }
     if (this->couleur_joueur==Noir){
-        if(this->echiquier_ref.plateau[56]!=nullptr && this->echiquier_ref.plateau[60]!=nullptr ){
+        if(this->echiquier_ref.plateau[56]!=nullptr && this->echiquier_ref.plateau[60]!=nullptr && this->echiquier_ref.plateau[57]!=nullptr && this->echiquier_ref.plateau[58]!=nullptr && this->echiquier_ref.plateau[59]!=nullptr ){
             if(this->echiquier_ref.plateau[56]->P.Nom_piece==Tour && this->echiquier_ref.plateau[60]->P.Nom_piece==Roi){
                 if(this->echiquier_ref.plateau[56]->Couleur==Noir && this->echiquier_ref.plateau[60]->Couleur==Noir){
                     if(this->echiquier_ref.plateau[56]->a_bouger==false && this->echiquier_ref.plateau[60]->a_bouger==false){
