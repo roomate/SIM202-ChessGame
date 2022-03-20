@@ -851,14 +851,633 @@ Position_Echec& Position_Echec::coup_humain(){ //Met le coup joué par le joueur
 
 Position_Echec& Position_Echec::position_possible()
 {
+    PieceColor turn = couleur_joueur;
+    bool presence; //Ce booléen est fait pour les pieces pouvant se déplacer sur plusieurs cases : si sur le chemin on a un allié, on ne peut pas allé plus loin
+    for (int i = 0; i < 8; ++i)
+    { //On se balade dans les lignes
+        for (int j = 1; j < 8; ++j)
+        { //On se balade dans les colonnes
+            piece* Pc= this->echiquier_ref.plateau[8*i+j]; //Piece qui se trouve dans cette emplacement
+            if (Pc != nullptr && Pc->Couleur==turn)
+            { //S'il y a une pièce et qu'elle correspond au joueur qui doit jouer
+                vector<vector<int>> Dep = (Pc->P).Dep_rel; //On récupere sa matrice de mouvement
+                if (Pc->P.Nom_piece != Pion && Pc->P.Nom_piece != Roi)//Si la piece n'est pas un pion
+                 {
+                     int b = Dep[0].size();
+                     for(int l = 2; l<b; l++)
+                    {
+                        presence = false;
+                        if (Dep[2][l]==1)
+                        {
+                            if (0 <= i+Dep[0][l] && i + Dep[0][l]< 8 && 0 <= j+Dep[1][l] && j + Dep[1][l] < 8 )
+                            {
+                                piece* actuel = echiquier_ref.plateau[8*(i + Dep[0][l]) + j + Dep[1][l]];
+                                if (actuel == nullptr) //Si la case est vide
+                                {
+                                    //On crée la nouvelle soeur et on change la couleur
+                                    Position_Echec* nouvelle_soeur = new Position_Echec;
+                                    coup_echec C(Pc, i, j, i + Dep[0][1], j + Dep[1][l]); //Nouveau coup_echec
+                                    nouvelle_soeur->couleur_joueur = turn;
+                                    nouvelle_soeur->echiquier_ref = this->echiquier_ref; //On enregistre l'échiquier actuel pour le modifier après
+                                    nouvelle_soeur->Liste_coup = Liste_coup;
+                                    nouvelle_soeur->Liste_coup.push_back(C); //Grace au coup echec qu'on a enregistré
+                                    nouvelle_soeur->soeur = this->fille;
+                                    this->fille = nouvelle_soeur;
+                                }
+                                else if (actuel->Couleur != turn && actuel->P.Nom_piece!=Roi) //Une piece est sur le chemin : ce n'est ni une pièce allié, ni le roi
+                                {
+                                    Position_Echec* nouvelle_soeur = new Position_Echec;
+                                    nouvelle_soeur->couleur_joueur = turn;
+                                    coup_echec C(Pc,actuel, i, j, i + Dep[0][1], j + Dep[1][l]); //Nouveau coup_echec
 
+                                    //On crée la nouvelle soeur et on change la couleur
+                                    nouvelle_soeur->echiquier_ref = echiquier_ref;
+                                    nouvelle_soeur->Liste_coup = Liste_coup;
+                                    nouvelle_soeur->Liste_coup.push_back(C); //Grace au coup echec qu'on a enregistré
+                                    nouvelle_soeur->soeur = this->fille;
+                                    this->fille = nouvelle_soeur;
+                                }
+                            }
+                        }
+                        else //Si la pièce peut se balader sur plusieurs cases
+                        {
+                            presence = false;
+                            int k = 1;
+                            while (0 <= i + k*Dep[0][l] && i + k*Dep[0][l]< 8 && 0 <= j + k*Dep[1][l] && j + k*Dep[1][l]< 8 && presence == false)
+                            {
+                                piece* actuel = echiquier_ref.plateau[8*(i + k*Dep[0][l]) + j + k*Dep[1][l]];
+                                if (actuel == nullptr) //Si la case est vide
+                                {
+                                    coup_echec C(Pc, i, j, i + Dep[0][1], j + Dep[1][l]); //Nouveau coup_echec
 
+                                    //On crée la nouvelle soeur et on change la couleur
+                                    Position_Echec* nouvelle_soeur = new Position_Echec;
+                                    nouvelle_soeur->couleur_joueur = turn;
+                                    nouvelle_soeur->echiquier_ref = echiquier_ref;
+                                    nouvelle_soeur->Liste_coup = Liste_coup;
+                                    nouvelle_soeur->Liste_coup.push_back(C); //Grace au coup echec qu'on a enregistré
+                                    nouvelle_soeur->soeur = this->fille;
+                                    this->fille = nouvelle_soeur;
+                                }
+                                else if (actuel->Couleur != turn && actuel->P.Nom_piece!=Roi) //Une piece est sur le chemin : ce n'est ni une pièce allié, ni le roi
+                                {
+                                    coup_echec C(Pc,actuel, i, j, i + Dep[0][1], j + Dep[1][l]); //Nouveau coup_echec
 
+                                    //On crée la nouvelle soeur et on change la couleur
+                                    Position_Echec* nouvelle_soeur = new Position_Echec;
+                                    nouvelle_soeur->couleur_joueur = turn;
+                                    nouvelle_soeur->Liste_coup = Liste_coup;
+                                    nouvelle_soeur->Liste_coup.push_back(C); //Grace au coup echec qu'on a enregistré
+                                    nouvelle_soeur->soeur = this->fille;
+                                    this->fille = nouvelle_soeur;
+                                }
+                                else if (actuel->Couleur == turn)
+                                {
+                                    presence = true;
+                                }
+                                ++k;
+                            }
+                        }
+                    }
+                }
+                else if(Pc->P.Nom_piece == Pion) //Si Pc est un pion
+                {
+                    if (Pc->Couleur == Blanc) // Si le pion est blanc
+                    {
+                        if (i <=5) //Si le pion n'est pas sur la dernière ligne
+                        {
+                            piece* actuel = echiquier_ref.plateau[8*(i + 1) + j];
+                            if (actuel == nullptr)
+                            {
 
+                                coup_echec C(Pc, i, j, i + 1, j); //Nouveau coup_echec
+                                //On crée la nouvelle soeur et on change la couleur
+                                Position_Echec* nouvelle_soeur = new Position_Echec;
+                                nouvelle_soeur->couleur_joueur = turn;
+                                nouvelle_soeur->Liste_coup = Liste_coup;
+                                nouvelle_soeur->echiquier_ref = echiquier_ref;
+                                nouvelle_soeur->Liste_coup.push_back(C); //Grace au coup echec qu'on a enregistré
+                                //Pas de prise
+                                nouvelle_soeur->soeur = this->fille;
+                                this->fille = nouvelle_soeur;
+                            }
+                        }
+                         else if (i == 6)//Juste promotion en avancant
+                        {
+                            piece* actuel = echiquier_ref.plateau[8*(i + 1) + j ];
+                            if (actuel == nullptr)
+                            {
+                                //Promotion fou
+                                coup_echec C("prom_f",Pc, i, j, i - 1, j); //Nouveau coup_echec
+                            //On crée la nouvelle soeur et on change la couleur
+                                Position_Echec* nouvelle_soeur = new Position_Echec;
+                                nouvelle_soeur->couleur_joueur = turn;
+                                nouvelle_soeur->Liste_coup = Liste_coup;
+                                nouvelle_soeur->echiquier_ref = echiquier_ref;
+                                nouvelle_soeur->Liste_coup.push_back(C); //Grace au coup echec qu'on a enregistré
+                                //pas de Pprise
+                                nouvelle_soeur->soeur = this->fille;
+                                this->fille = nouvelle_soeur;
 
+                                //Promotion Tour
+                                coup_echec D("prom_t",Pc, i, j, i - 1, j); //Nouveau coup_echec
+                            //On crée la nouvelle soeur et on change la couleur
+                                Position_Echec* nouvelle_soeur1 = new Position_Echec;
+                                nouvelle_soeur1->couleur_joueur = turn;
+                                nouvelle_soeur1->Liste_coup = Liste_coup;
+                                nouvelle_soeur1->echiquier_ref = echiquier_ref;
+                                nouvelle_soeur1->Liste_coup.push_back(C); //Grace au coup echec qu'on a enregistré
+                                //pas de Pprise
+                                nouvelle_soeur1->soeur = this->fille;
+                                this->fille = nouvelle_soeur1;
 
+                                //Promotion dame
+                                coup_echec E("prom_d",Pc, i, j, i - 1, j); //Nouveau coup_echec
+                            //On crée la nouvelle soeur et on change la couleur
+                                Position_Echec* nouvelle_soeur2 = new Position_Echec;
+                                nouvelle_soeur2->couleur_joueur = turn;
+                                nouvelle_soeur2->Liste_coup = Liste_coup;
+                                nouvelle_soeur2->echiquier_ref = echiquier_ref;
+                                nouvelle_soeur2->Liste_coup.push_back(C); //Grace au coup echec qu'on a enregistré
+                                //pas de Pprise
+                                nouvelle_soeur2->soeur = this->fille;
+                                this->fille = nouvelle_soeur2;
 
+                                //Promotion cavalier
+                                coup_echec F("prom_c",Pc, i, j, i - 1, j); //Nouveau coup_echec
+                            //On crée la nouvelle soeur et on change la couleur
+                                Position_Echec* nouvelle_soeur3 = new Position_Echec;
+                                nouvelle_soeur3->couleur_joueur = turn;
+                                nouvelle_soeur3->echiquier_ref = echiquier_ref;
+                                nouvelle_soeur3->Liste_coup = Liste_coup;
+                                nouvelle_soeur3->Liste_coup.push_back(C); //Grace au coup echec qu'on a enregistré
+                                //pas de Pprise
+                                nouvelle_soeur3->soeur = this->fille;
+                                this->fille = nouvelle_soeur3;
+                            }
+                        }
+                        if (i == 1) // Si le pion n'a pas encore bougé
+                        {
+                            piece* actuel = echiquier_ref.plateau[8*(i + 2) + j ];
+                            if (actuel == nullptr)
+                            {
 
+                                coup_echec C(Pc, i, j, i + 2, j); //Nouveau coup_echec
+                                //On crée la nouvelle soeur et on change la couleur
+                                Position_Echec* nouvelle_soeur = new Position_Echec;
+                                nouvelle_soeur->couleur_joueur = turn;
+                                nouvelle_soeur->echiquier_ref = echiquier_ref;
+                                nouvelle_soeur->Liste_coup = Liste_coup;
+                                nouvelle_soeur->Liste_coup.push_back(C); //Grace au coup echec qu'on a enregistré
+                                nouvelle_soeur->soeur = this->fille;
+                                this->fille = nouvelle_soeur;
+                            }
+                        }
+                        if (i + 1 <=6 && 0<= j + 1 && j + 1 <=7) //Si le pion se trouve dans la situation où il peut manger (diagonale droite)
+                        {
+                            piece* actuel = this->echiquier_ref.plateau[8*(i + 1) + j + 1];
+                            if (actuel != nullptr && actuel->Couleur == Noir) // Si la piece est mangeable
+                            {
+                                if (actuel->P.Nom_piece != Roi) //Et que c'est pas un roi
+                                {
+                                    coup_echec C(Pc,actuel, i, j, i + 1, j + 1); //Nouveau coup_echec
+                                    //On crée la nouvelle soeur et on change la couleur
+                                    Position_Echec* nouvelle_soeur = new Position_Echec;
+                                    nouvelle_soeur->couleur_joueur = turn;
+                                    nouvelle_soeur->Liste_coup = Liste_coup;
+                                    nouvelle_soeur->Liste_coup.push_back(C); //Grace au coup echec qu'on a enregistré
+                                    nouvelle_soeur->soeur = this->fille;
+                                    this->fille = nouvelle_soeur;
+                                }
+                            }
+                        }
+                        else if( i  + 1 == 7 && j + 1 <= 7) //Promotion droite + manger
+                        {
+                            piece* actuel = this->echiquier_ref.plateau[j + 1];
+                            if (actuel != nullptr && actuel->Couleur == Noir) // Si la piece est mangeable
+                            {
+                                if (actuel->P.Nom_piece != Roi) //Et que c'est pas un roi
+                                {
+                                    //Promotion fou
+                                    coup_echec C("prom_f",Pc,actuel, i, j, i - 1, j + 1); //Nouveau coup_echec
+                                     //On crée la nouvelle soeur et on change la couleur
+                                    Position_Echec* nouvelle_soeur = new Position_Echec;
+                                    nouvelle_soeur->couleur_joueur = turn;
+                                    nouvelle_soeur->echiquier_ref = echiquier_ref;
+                                    nouvelle_soeur->Liste_coup = Liste_coup;
+                                    nouvelle_soeur->Liste_coup.push_back(C); //Grace au coup echec qu'on a enregistré
+                                    nouvelle_soeur->soeur = this->fille;
+                                    this->fille = nouvelle_soeur;
 
+                                    //Promotion tour
+                                    coup_echec D("prom_t",Pc,actuel, i, j, i - 1, j + 1); //Nouveau coup_echec
+                                     //On crée la nouvelle soeur et on change la couleur
+                                    Position_Echec* nouvelle_soeur2 = new Position_Echec;
+                                    nouvelle_soeur->couleur_joueur = turn;
+                                    nouvelle_soeur2->echiquier_ref = echiquier_ref;
+                                    nouvelle_soeur2->Liste_coup = Liste_coup;
+                                    nouvelle_soeur2->Liste_coup.push_back(C); //Grace au coup echec qu'on a enregistré
+                                    nouvelle_soeur2->soeur = this->fille;
+                                    this->fille = nouvelle_soeur2;
 
+                                    //Promotion dame
+                                    coup_echec E("prom_d",Pc,actuel, i, j, i - 1, j + 1); //Nouveau coup_echec
+                                     //On crée la nouvelle soeur et on change la couleur
+                                    Position_Echec* nouvelle_soeur3 = new Position_Echec;
+                                    nouvelle_soeur->couleur_joueur = turn;
+                                    nouvelle_soeur3->echiquier_ref = echiquier_ref;
+                                    nouvelle_soeur3->Liste_coup = Liste_coup;
+                                    nouvelle_soeur3->Liste_coup.push_back(C); //Grace au coup echec qu'on a enregistré
+                                    nouvelle_soeur3->soeur = this->fille;
+                                    this->fille = nouvelle_soeur3;
+
+                                    //Promotion cavalier
+                                    coup_echec F("prom_c",Pc,actuel, i, j, i - 1, j + 1); //Nouveau coup_echec
+                                     //On crée la nouvelle soeur et on change la couleur
+                                    Position_Echec* nouvelle_soeur4 = new Position_Echec;
+                                    nouvelle_soeur4->couleur_joueur = turn;
+                                    nouvelle_soeur4->echiquier_ref = echiquier_ref;
+                                    nouvelle_soeur4->Liste_coup = Liste_coup;
+                                    nouvelle_soeur4->Liste_coup.push_back(C); //Grace au coup echec qu'on a enregistré
+                                    nouvelle_soeur4->soeur = this->fille;
+                                    this->fille = nouvelle_soeur4;
+                                }
+                            }
+                        }
+                        if (i + 1<=6 && 0<= j - 1) //Si le pion se trouve dans la situation où il peut manger (diagonale gauche)
+                        {
+                            piece* actuel = this->echiquier_ref.plateau[8*(i + 1) + j - 1];
+                            if (actuel != nullptr && actuel->Couleur == Noir) // Si la piece est mangeable
+                            {
+                                if (actuel->P.Nom_piece != Roi) //Et que c'est pas un roi
+                                {
+                                    coup_echec C(Pc,actuel, i, j, i + 1, j - 1); //Nouveau coup_echec
+                                    //On crée la nouvelle soeur et on change la couleur
+                                    Position_Echec* nouvelle_soeur = new Position_Echec;
+                                    nouvelle_soeur->couleur_joueur = turn;
+                                    nouvelle_soeur->echiquier_ref = echiquier_ref;
+                                    nouvelle_soeur->Liste_coup = Liste_coup;
+                                    nouvelle_soeur->Liste_coup.push_back(C); //Grace au coup echec qu'on a enregistré
+                                    nouvelle_soeur->soeur = this->fille;
+                                    this->fille = nouvelle_soeur;
+                                }
+                            }
+                        }
+                        else if( i + 1 == 7 && 0<= j - 1) //Promotion gauche + manger
+                        {
+                            piece* actuel = this->echiquier_ref.plateau[j + 1];
+                            if (actuel != nullptr && actuel->Couleur == Noir) // Si la piece est mangeable
+                            {
+                                if (actuel->P.Nom_piece != Roi) //Et que c'est pas un roi
+                                {
+                                    //Promotion fou
+                                    coup_echec C("prom_f",Pc,actuel, i, j, i - 1, j + 1); //Nouveau coup_echec
+                                     //On crée la nouvelle soeur et on change la couleur
+                                    Position_Echec* nouvelle_soeur = new Position_Echec;
+                                    nouvelle_soeur->couleur_joueur = turn;
+                                    nouvelle_soeur->echiquier_ref = echiquier_ref;
+                                    nouvelle_soeur->Liste_coup = Liste_coup;
+                                    nouvelle_soeur->Liste_coup.push_back(C); //Grace au coup echec qu'on a enregistré
+                                    nouvelle_soeur->soeur = this->fille;
+                                    this->fille = nouvelle_soeur;
+
+                                    //Promotion tour
+                                    coup_echec D("prom_t",Pc,actuel, i, j, i - 1, j + 1); //Nouveau coup_echec
+                                     //On crée la nouvelle soeur et on change la couleur
+                                    Position_Echec* nouvelle_soeur2 = new Position_Echec;
+                                    nouvelle_soeur2->couleur_joueur = turn;
+                                    nouvelle_soeur2->echiquier_ref = echiquier_ref;
+                                    nouvelle_soeur2->Liste_coup = Liste_coup;
+                                    nouvelle_soeur2->Liste_coup.push_back(C); //Grace au coup echec qu'on a enregistré
+                                    nouvelle_soeur2->soeur = this->fille;
+                                    this->fille = nouvelle_soeur2;
+
+                                    //Promotion dame
+                                    coup_echec E("prom_d",Pc,actuel, i, j, i - 1, j + 1); //Nouveau coup_echec
+                                     //On crée la nouvelle soeur et on change la couleur
+                                    Position_Echec* nouvelle_soeur3 = new Position_Echec;
+                                    nouvelle_soeur3->couleur_joueur = turn;
+                                    nouvelle_soeur3->echiquier_ref = echiquier_ref;
+                                    nouvelle_soeur3->Liste_coup.push_back(C); //Grace au coup echec qu'on a enregistré
+                                    nouvelle_soeur3->soeur = this->fille;
+                                    this->fille = nouvelle_soeur3;
+
+                                    //Promotion cavalier
+                                    coup_echec F("prom_c",Pc,actuel, i, j, i - 1, j + 1); //Nouveau coup_echec
+                                     //On crée la nouvelle soeur et on change la couleur
+                                    Position_Echec* nouvelle_soeur4 = new Position_Echec;
+                                    nouvelle_soeur4->couleur_joueur = turn;
+                                    nouvelle_soeur4->echiquier_ref = echiquier_ref;
+                                    nouvelle_soeur4->Liste_coup = Liste_coup;
+                                    nouvelle_soeur4->Liste_coup.push_back(C); //Grace au coup echec qu'on a enregistré
+                                    nouvelle_soeur4->soeur = this->fille;
+                                    this->fille = nouvelle_soeur4;
+                                }
+                            }
+                        }
+                    }
+                    else //Si le pion est Noire
+                    {
+                        if (i > 1)
+                        {
+                            piece* actuel = echiquier_ref.plateau[8*(i - 1) + j ];
+                            if (actuel == nullptr)
+                            {
+
+                                coup_echec C(Pc, i, j, i -1, j); //Nouveau coup_echec
+                            //On crée la nouvelle soeur et on change la couleur
+                                Position_Echec* nouvelle_soeur = new Position_Echec;
+                                nouvelle_soeur->couleur_joueur = turn;
+                                nouvelle_soeur->echiquier_ref = echiquier_ref;
+                                nouvelle_soeur->Liste_coup = Liste_coup;
+                                nouvelle_soeur->Liste_coup.push_back(C); //Grace au coup echec qu'on a enregistré
+                                //pas de Pprise
+                                nouvelle_soeur->soeur = this->fille;
+                                this->fille = nouvelle_soeur;
+                            }
+                        }
+                        else //Promotion, on se trouve à i = 1, impossible d'avoir un pion à i = 0 normalement
+                        {
+                            piece* actuel = echiquier_ref.plateau[8*(i - 1) + j ];
+                            if (actuel == nullptr)
+                            {
+                                //Promotion fou
+                                coup_echec C("prom_f",Pc, i, j, i - 1, j); //Nouveau coup_echec
+                            //On crée la nouvelle soeur et on change la couleur
+                                Position_Echec* nouvelle_soeur = new Position_Echec;
+                                nouvelle_soeur->couleur_joueur = turn;
+                                nouvelle_soeur->echiquier_ref = echiquier_ref;
+                                nouvelle_soeur->Liste_coup = Liste_coup;
+                                nouvelle_soeur->Liste_coup.push_back(C); //Grace au coup echec qu'on a enregistré
+                                //pas de Pprise
+                                nouvelle_soeur->soeur = this->fille;
+                                this->fille = nouvelle_soeur;
+
+                                //Promotion Tour
+                                coup_echec D("prom_t",Pc, i, j, i - 1, j); //Nouveau coup_echec
+                            //On crée la nouvelle soeur et on change la couleur
+                                Position_Echec* nouvelle_soeur1 = new Position_Echec;
+                                nouvelle_soeur1->couleur_joueur = turn;
+                                nouvelle_soeur1->echiquier_ref = echiquier_ref;
+                                nouvelle_soeur1->Liste_coup = Liste_coup;
+                                nouvelle_soeur1->Liste_coup.push_back(C); //Grace au coup echec qu'on a enregistré
+                                //pas de Pprise
+                                nouvelle_soeur1->soeur = this->fille;
+                                this->fille = nouvelle_soeur1;
+
+                                //Promotion dame
+                                coup_echec E("prom_d",Pc, i, j, i - 1, j); //Nouveau coup_echec
+                            //On crée la nouvelle soeur et on change la couleur
+                                Position_Echec* nouvelle_soeur2 = new Position_Echec;
+                                if (turn == Blanc)
+                                nouvelle_soeur2->couleur_joueur = turn;
+                                nouvelle_soeur2->Liste_coup = Liste_coup;
+                                nouvelle_soeur2->echiquier_ref = echiquier_ref;
+                                nouvelle_soeur2->Liste_coup.push_back(C); //Grace au coup echec qu'on a enregistré
+                                //pas de Pprise
+                                nouvelle_soeur2->soeur = this->fille;
+                                this->fille = nouvelle_soeur2;
+
+                                //Promotion cavalier
+                                coup_echec F("prom_c",Pc, i, j, i - 1, j); //Nouveau coup_echec
+                            //On crée la nouvelle soeur et on change la couleur
+                                Position_Echec* nouvelle_soeur3 = new Position_Echec;
+                                nouvelle_soeur3->couleur_joueur = turn;
+                                nouvelle_soeur3->Liste_coup = Liste_coup;
+                                nouvelle_soeur3->echiquier_ref = echiquier_ref;
+                                nouvelle_soeur3->Liste_coup.push_back(C); //Grace au coup echec qu'on a enregistré
+                                //pas de Pprise
+                                nouvelle_soeur3->soeur = this->fille;
+                                this->fille = nouvelle_soeur3;
+
+                            }
+                        }
+                        if (i == 6) //Le pion Noir n'a pas encore bougé
+                        {
+                            piece*  actuel= echiquier_ref.plateau[8*(i - 2) + j ];
+                            if (actuel == nullptr)
+                            {
+
+                                coup_echec C(Pc, i, j, i - 2, j); //Nouveau coup_echec
+                                //On crée la nouvelle soeur et on change la couleur
+                                Position_Echec* nouvelle_soeur = new Position_Echec;
+                                nouvelle_soeur->couleur_joueur = turn;
+                                nouvelle_soeur->echiquier_ref = echiquier_ref;
+                                nouvelle_soeur->Liste_coup = Liste_coup;
+                                nouvelle_soeur->Liste_coup.push_back(C); //Grace au coup echec qu'on a enregistré
+                                nouvelle_soeur->soeur = this->fille;
+                                this->fille = nouvelle_soeur;
+                            }
+                        }
+                        if (1<= i - 1  && i - 1 <=7 && j + 1 <=7) //Si le pion se trouve dans la situation où il peut manger (diagonale droite)
+                        {
+                            piece* actuel = this->echiquier_ref.plateau[8*(i - 1) + j + 1];
+                            if (actuel != nullptr && actuel->Couleur == Blanc) // Si la piece est mangeable
+                            {
+                                if (actuel->P.Nom_piece != Roi) //Et que c'est pas un roi
+                                {
+                                    coup_echec C(Pc,actuel, i, j, i - 1, j + 1); //Nouveau coup_echec
+                                     //On crée la nouvelle soeur et on change la couleur
+                                    Position_Echec* nouvelle_soeur = new Position_Echec;
+                                    nouvelle_soeur->couleur_joueur = turn;
+                                    nouvelle_soeur->echiquier_ref = echiquier_ref;
+                                    nouvelle_soeur->Liste_coup = Liste_coup;
+                                    nouvelle_soeur->Liste_coup.push_back(C); //Grace au coup echec qu'on a enregistré
+                                    nouvelle_soeur->soeur = this->fille;
+                                    this->fille = nouvelle_soeur;
+                                }
+                            }
+                        }
+                        else if (i == 1 && j + 1 <=7) //Le pion noir peut manger et faire promotion en même temps en diagonale droite
+                        {
+                            piece* actuel = this->echiquier_ref.plateau[j + 1];
+                            if (actuel != nullptr && actuel->Couleur == Blanc) // Si la piece est mangeable
+                            {
+                                if (actuel->P.Nom_piece != Roi) //Et que c'est pas un roi
+                                {
+                                    //Promotion fou
+                                    coup_echec C("prom_f",Pc,actuel, i, j, i - 1, j + 1); //Nouveau coup_echec
+                                     //On crée la nouvelle soeur et on change la couleur
+                                    Position_Echec* nouvelle_soeur = new Position_Echec;
+                                    nouvelle_soeur->couleur_joueur = turn;
+                                    nouvelle_soeur->echiquier_ref = echiquier_ref;
+                                    nouvelle_soeur->Liste_coup = Liste_coup;
+                                    nouvelle_soeur->Liste_coup.push_back(C); //Grace au coup echec qu'on a enregistré
+                                    nouvelle_soeur->soeur = this->fille;
+                                    this->fille = nouvelle_soeur;
+
+                                    //Promotion tour
+                                    coup_echec D("prom_t",Pc,actuel, i, j, i - 1, j + 1); //Nouveau coup_echec
+                                     //On crée la nouvelle soeur et on change la couleur
+                                    Position_Echec* nouvelle_soeur2 = new Position_Echec;
+                                    nouvelle_soeur2->couleur_joueur = turn;
+                                    nouvelle_soeur2->echiquier_ref = echiquier_ref;
+                                    nouvelle_soeur2->Liste_coup = Liste_coup;
+                                    nouvelle_soeur2->Liste_coup.push_back(C); //Grace au coup echec qu'on a enregistré
+                                    nouvelle_soeur2->soeur = this->fille;
+                                    this->fille = nouvelle_soeur2;
+
+                                    //Promotion dame
+                                    coup_echec E("prom_d",Pc,actuel, i, j, i - 1, j + 1); //Nouveau coup_echec
+                                     //On crée la nouvelle soeur et on change la couleur
+                                    Position_Echec* nouvelle_soeur3 = new Position_Echec;
+                                    nouvelle_soeur3->couleur_joueur = turn;
+                                    nouvelle_soeur3->echiquier_ref = echiquier_ref;
+                                    nouvelle_soeur3->Liste_coup = Liste_coup;
+                                    nouvelle_soeur3->Liste_coup.push_back(C); //Grace au coup echec qu'on a enregistré
+                                    nouvelle_soeur3->soeur = this->fille;
+                                    this->fille = nouvelle_soeur3;
+
+                                    //Promotion cavalier
+                                    coup_echec F("prom_c",Pc,actuel, i, j, i - 1, j + 1); //Nouveau coup_echec
+                                     //On crée la nouvelle soeur et on change la couleur
+                                    Position_Echec* nouvelle_soeur4 = new Position_Echec;
+                                    nouvelle_soeur4->couleur_joueur = turn;
+                                    nouvelle_soeur4->echiquier_ref = echiquier_ref;
+                                    nouvelle_soeur4->Liste_coup = Liste_coup;
+                                    nouvelle_soeur4->Liste_coup.push_back(C); //Grace au coup echec qu'on a enregistré
+                                    nouvelle_soeur4->soeur = this->fille;
+                                    this->fille = nouvelle_soeur4;
+                                }
+                            }
+                        }
+
+                        if (1<= i - 1 && i - 1 <=7 && 0<= j - 1) //Si le pion se trouve dans la situation où il peut manger (diagonale gauche)
+                        {
+                            piece* actuel = this->echiquier_ref.plateau[8*(i - 1) + j - 1];
+                            if (actuel != nullptr && actuel->Couleur == Blanc) // Si la piece est mangeable
+                            {
+                                if (actuel->P.Nom_piece != Roi) //Et que c'est pas un roi
+                                {
+                                    coup_echec C(Pc, actuel, i, j, i - 1, j - 1); //Nouveau coup_echec
+                                    //On crée la nouvelle soeur et on change la couleur
+                                    Position_Echec* nouvelle_soeur = new Position_Echec;
+                                    nouvelle_soeur->couleur_joueur = turn;
+                                    nouvelle_soeur->echiquier_ref = echiquier_ref;
+                                    nouvelle_soeur->Liste_coup = Liste_coup;
+                                    nouvelle_soeur->Liste_coup.push_back(C); //Grace au coup echec qu'on a enregistré
+                                    nouvelle_soeur->soeur = this->fille;
+                                    this->fille = nouvelle_soeur;
+                                }
+                            }
+                        }
+                        else if ( i == 1 && j - 1 >= 0) //Promotion plus manger d'un coup en diagonale gauche
+                        {
+                            piece* actuel = this->echiquier_ref.plateau[j - 1];
+                            if (actuel != nullptr && actuel->Couleur == Blanc) // Si la piece est mangeable
+                            {
+                                if (actuel->P.Nom_piece != Roi) //Et que c'est pas un roi
+                                {
+                                    //Promotion fou
+                                    coup_echec C("prom_f",Pc,actuel, i, j, i - 1, j - 1); //Nouveau coup_echec
+                                     //On crée la nouvelle soeur et on change la couleur
+                                    Position_Echec* nouvelle_soeur1 = new Position_Echec;
+                                    nouvelle_soeur1->couleur_joueur = turn;
+                                    nouvelle_soeur1->echiquier_ref = echiquier_ref;
+                                    nouvelle_soeur1->Liste_coup = Liste_coup;
+                                    nouvelle_soeur1->Liste_coup.push_back(C); //Grace au coup echec qu'on a enregistré
+                                    nouvelle_soeur1->soeur = this->fille;
+                                    this->fille = nouvelle_soeur1;
+
+                                    //Promotion tour
+                                    coup_echec D("prom_t",Pc,actuel, i, j, i - 1, j - 1); //Nouveau coup_echec
+                                     //On crée la nouvelle soeur et on change la couleur
+                                    Position_Echec* nouvelle_soeur2 = new Position_Echec;
+                                    nouvelle_soeur2->couleur_joueur = turn;
+                                    nouvelle_soeur2->echiquier_ref = echiquier_ref;
+                                    nouvelle_soeur2->Liste_coup = Liste_coup;
+                                    nouvelle_soeur2->Liste_coup.push_back(C); //Grace au coup echec qu'on a enregistré
+                                    nouvelle_soeur2->soeur = this->fille;
+                                    this->fille = nouvelle_soeur2;
+
+                                    //Promotion dame
+                                    coup_echec E("prom_d",Pc,actuel, i, j, i - 1, j - 1); //Nouveau coup_echec
+                                     //On crée la nouvelle soeur et on change la couleur
+                                    Position_Echec* nouvelle_soeur3 = new Position_Echec;
+                                    nouvelle_soeur3->couleur_joueur = turn;
+                                    nouvelle_soeur3->echiquier_ref = echiquier_ref;
+                                    nouvelle_soeur3->Liste_coup = Liste_coup;
+                                    nouvelle_soeur3->Liste_coup.push_back(C); //Grace au coup echec qu'on a enregistré
+                                    nouvelle_soeur3->soeur = this->fille;
+                                    this->fille = nouvelle_soeur3;
+
+                                    //Promotion cavalier
+                                    coup_echec F("prom_c",Pc,actuel, i, j, i - 1, j - 1); //Nouveau coup_echec
+                                     //On crée la nouvelle soeur et on change la couleur
+                                    Position_Echec* nouvelle_soeur4 = new Position_Echec;
+                                    nouvelle_soeur4->couleur_joueur = turn;
+                                    nouvelle_soeur4->echiquier_ref = echiquier_ref;
+                                    nouvelle_soeur4->Liste_coup = Liste_coup;
+                                    nouvelle_soeur4->Liste_coup.push_back(C); //Grace au coup echec qu'on a enregistré
+                                    nouvelle_soeur4->soeur = this->fille;
+                                    this->fille = nouvelle_soeur4;
+                                }
+                            }
+                        }
+                    }
+                }
+                else if (Pc->P.Nom_piece == Roi) //Si on bouge le roi
+                {
+                    for (int l = 0; l<Dep[0].size(); i++) //Grace à sa matrice de mouvement
+                    {
+                        if (0<= i + Dep[0][l] && i + Dep[0][l]  < 8 && 0<= j + Dep[1][l] && j + Dep[1][l]<8)
+                        {
+                            piece* actuel = echiquier_ref.plateau[8*(i + Dep[0][l]) +  j + Dep[1][l]];
+                            if (actuel == nullptr)
+                            {
+                                coup_echec C(Pc, i, j, i + Dep[0][l], j + Dep[1][l]);
+                                Position_Echec* nouvelle_soeur = new Position_Echec;
+                                nouvelle_soeur->couleur_joueur = turn;
+                                nouvelle_soeur->echiquier_ref = echiquier_ref;
+                                nouvelle_soeur->Liste_coup = Liste_coup;
+                                nouvelle_soeur->Liste_coup.push_back(C);
+                                if (!nouvelle_soeur->test_echec())
+                                {
+                                    nouvelle_soeur->soeur = this->fille;
+                                    this->fille = nouvelle_soeur;
+                                }
+                            }
+                            else if (actuel != nullptr && actuel->Couleur != Pc->Couleur)
+                            {
+                                coup_echec C(Pc,actuel, i, j, i + Dep[0][l], j + Dep[1][l]);
+                                Position_Echec* nouvelle_soeur = new Position_Echec;
+                                nouvelle_soeur->couleur_joueur = turn;
+                                nouvelle_soeur->Liste_coup = Liste_coup;
+                                nouvelle_soeur->echiquier_ref = echiquier_ref;
+                                nouvelle_soeur->Liste_coup.push_back(C);
+                                if (!nouvelle_soeur->test_echec())
+                                {
+                                    nouvelle_soeur->soeur = this->fille;
+                                    this->fille = nouvelle_soeur;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if (this->test_g_rooc()) //Test du grand rooc
+            {
+                Position_Echec* nouvelle_soeur = new Position_Echec;
+                nouvelle_soeur->couleur_joueur = turn;
+                coup_echec C("g_rooc", Pc->Couleur);
+                nouvelle_soeur->echiquier_ref = echiquier_ref;
+                nouvelle_soeur->soeur = this->fille;
+                this->fille = nouvelle_soeur;
+                nouvelle_soeur->Liste_coup = Liste_coup;
+                nouvelle_soeur->Liste_coup.push_back(C);
+            }
+            else if (this->test_p_rooc()) //Test du petit rooc
+            {
+                Position_Echec* nouvelle_soeur = new Position_Echec;
+                nouvelle_soeur->couleur_joueur = turn;
+                coup_echec C("p_rooc", Pc->Couleur);
+                nouvelle_soeur->echiquier_ref = echiquier_ref;
+                nouvelle_soeur->Liste_coup = Liste_coup;
+                nouvelle_soeur->soeur = this->fille;
+                this->fille = nouvelle_soeur;
+                nouvelle_soeur->Liste_coup.push_back(C);
+            }
+        }
+    }
+    return *this;
 }
