@@ -16,7 +16,7 @@ void echiquier::affichage(){
 
     string alphat("ABCDEFGH");
     for (int i = 7; i>=0; i--){
-        cout<<8 - i<<"   ";
+        cout<<i+1<<"   ";
         for (int j=0; j<8; j++){
             if (plateau[i*8+j] != nullptr){
                 cout<<plateau[i*8+j]->string_type()<<(plateau[i*8+j]->Couleur==Blanc?"b":"n")<<"  ";
@@ -29,7 +29,7 @@ void echiquier::affichage(){
     cout<<"    ";
     for (int i = 0; i < 8; i++)
     {
-        cout<<alphat[7 - i]<<"   ";
+        cout<<alphat[i]<<"   ";
     }
     cout<<endl;
 }
