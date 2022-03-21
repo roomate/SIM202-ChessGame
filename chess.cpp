@@ -1,3 +1,4 @@
+
 #include "chess.hpp"
 #include <cmath>
 #include <string>
@@ -952,7 +953,6 @@ Position_Echec& Position_Echec::coup_humain(){ //Met le coup joué par le joueur
     return(*this);
 }
 
-
 Position_Echec& Position_Echec::position_possible()
 {
     PieceColor turn = couleur_joueur;
@@ -961,19 +961,21 @@ Position_Echec& Position_Echec::position_possible()
     { //On se balade dans les lignes
         for (int j = 0; j < 8; ++j)
         { //On se balade dans les colonnes
+            cout<<j<<endl;
             piece* Pc= this->echiquier_ref.plateau[8*i+j]; //Piece qui se trouve dans cette emplacement
             if (Pc != nullptr && Pc->Couleur==turn)
             { //S'il y a une pièce et qu'elle correspond au joueur qui doit jouer
                 vector<vector<int>> Dep = (Pc->P).Dep_rel; //On récupere sa matrice de mouvement
                 if (Pc->P.Nom_piece != Pion && Pc->P.Nom_piece != Roi)//Si la piece n'est pas un pion
                  {
-                     int b = Dep[0].size();
+                     int b = (int)(Dep[0].size());
                      for(int l = 0; l<b; l++)
                     {
                         presence = false;
-                        if (Dep[2][l]==1)
+                        if (Pc->P.Nom_piece == Cavalier)
                         {
-                            if (0 <= i+Dep[0][l] && i + Dep[0][l]< 8 && 0 <= j+Dep[1][l] && j + Dep[1][l] < 8 )
+                            cout<<"1 mouvement possible"<<endl;
+                            if (interieur_plateau(i + Dep[0][l],j + Dep[1][l] ))
                             {
                                 piece* actuel = echiquier_ref.plateau[8*(i + Dep[0][l]) + j + Dep[1][l]];
                                 if (actuel == nullptr) //Si la case est vide
@@ -1006,10 +1008,8 @@ Position_Echec& Position_Echec::position_possible()
                         else //Si la pièce peut se balader sur plusieurs cases
                         {
                             presence = false;
-                            int z = Dep[1][l];
-                            int y = Dep[0][l];
                             int k = 1;
-                            while (0 <= i + k*Dep[0][l] && i + k*Dep[0][l]< 8 && 0 <= j + k*Dep[1][l] && j + k*Dep[1][l]< 8 && presence == false)
+                            while (interieur_plateau(i + k*Dep[0][l],j + k*Dep[1][l] )&& presence == false)
                             {
                                 piece* actuel = echiquier_ref.plateau[8*(i + k*Dep[0][l]) + j + k*Dep[1][l]];
                                 if (actuel == nullptr) //Si la case est vide
@@ -1049,6 +1049,7 @@ Position_Echec& Position_Echec::position_possible()
                 }
                 else if(Pc->P.Nom_piece == Pion) //Si Pc est un pion
                 {
+                    cout<<"Au niveau des pions"<<endl;
                     if (Pc->Couleur == Blanc) // Si le pion est blanc
                     {
                         if (i <=5) //Si le pion n'est pas sur la dernière ligne
@@ -1527,25 +1528,37 @@ Position_Echec& Position_Echec::position_possible()
                 {
                     for (int l = 0; l<8; l++) //Grace à sa matrice de mouvement
                     {
+                        cout<<"C'est le roi ici"<<endl;
                         if (0<= i + Dep[0][l] && i + Dep[0][l]  < 8 && 0<= j + Dep[1][l] && j + Dep[1][l]<8)
                         {
+                            cout<<"yooo"<<endl;
                             piece* actuel = echiquier_ref.plateau[8*(i + Dep[0][l]) +  j + Dep[1][l]];
+                            cout<<"L.1526"<<endl;
                             if (actuel == nullptr)
                             {
+                                cout<<"L.1527"<<endl;
                                 coup_echec C(Pc, i, j, i + Dep[0][l], j + Dep[1][l]);
+                                cout<<"L.1528"<<endl;
                                 Position_Echec* nouvelle_soeur = new Position_Echec;
+                                cout<<"L.1529"<<endl;
                                 nouvelle_soeur->couleur_joueur = turn;
+                                cout<<"L.1530"<<endl;
                                 nouvelle_soeur->echiquier_ref = echiquier_ref;
+                                cout<<"L.1531"<<endl;
                                 nouvelle_soeur->Liste_coup = Liste_coup;
+                                cout<<"L.1532"<<endl;
                                 nouvelle_soeur->Liste_coup.push_back(C);
+                                cout<<"L.1533"<<endl;
                                 if (!nouvelle_soeur->test_echec())
                                 {
+                                    cout<<"L.1534"<<endl;
                                     nouvelle_soeur->soeur = this->fille;
                                     this->fille = nouvelle_soeur;
                                 }
                             }
-                            else if (actuel != nullptr && actuel->Couleur != Pc->Couleur) //Si le roi mange un truc sna
+                            else if (actuel != nullptr && actuel->Couleur != Pc->Couleur) //Si le roi mange un truc sans se mettre en echec
                             {
+                                cout<<"L.1539"<<endl;
                                 coup_echec C(Pc,actuel, i, j, i + Dep[0][l], j + Dep[1][l]);
                                 Position_Echec* nouvelle_soeur = new Position_Echec;
                                 nouvelle_soeur->couleur_joueur = turn;
@@ -1558,6 +1571,7 @@ Position_Echec& Position_Echec::position_possible()
                                     this->fille = nouvelle_soeur;
                                 }
                             }
+                            cout<<"L.1551"<<endl;
                         }
                     }
                 }
@@ -1566,6 +1580,7 @@ Position_Echec& Position_Echec::position_possible()
     }
     if (this->test_g_rooc()) //Test du grand rooc
     {
+        cout<<"g_roc ici"<<endl;
         Position_Echec* nouvelle_soeur = new Position_Echec;
         nouvelle_soeur->couleur_joueur = turn;
         coup_echec C("g_rooc", turn);
