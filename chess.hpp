@@ -509,6 +509,7 @@ echiquier echiquier_test_echec_mat();
 echiquier echiquier_piece();
 
 int minimax(Position &P, int alpha, int beta, int depth);
+bool interieur_plateau(int i,int j);
 
 
 #endif
