@@ -8,8 +8,8 @@
 const int alpha = 1;
 const int beta = 1;
 
-const int MAX = 1000;
-const int MIN = -1000;
+const int MAX = 100000;
+const int MIN = -100000;
 
 //====================================
 
@@ -174,6 +174,8 @@ echiquier construction_echiquier(Position_Echec& P){
 
         }
         else if (it->prom_f == true){
+            if (echiquier_final.plateau[it->i1*8+it->j1] != nullptr)
+            {
                 piece* promotion = echiquier_final.plateau[it->i1*8+it->j1];
                 fou type_prom;
                 promotion->a_bouger=true;
@@ -182,9 +184,11 @@ echiquier construction_echiquier(Position_Echec& P){
                 promotion->y = it->j2;
                 echiquier_final.plateau[it->i2*8+it->j2] = promotion;
                 echiquier_final.plateau[it->i1*8+it->j1] = nullptr;
+            }
 
         }
         else if (it->prom_d == true){
+            if (echiquier_final.plateau[it->i1*8+it->j1] != nullptr){
                 piece* promotion = echiquier_final.plateau[it->i1*8+it->j1];
                 dame type_prom;
                 promotion->a_bouger=true;
@@ -193,9 +197,12 @@ echiquier construction_echiquier(Position_Echec& P){
                 promotion->y = it->j2;
                 echiquier_final.plateau[it->i2*8+it->j2] = promotion;
                 echiquier_final.plateau[it->i1*8+it->j1] = nullptr;
+            }
 
         }
         else if (it->prom_t == true){
+            if (echiquier_final.plateau[it->i1*8+it->j1] != nullptr)
+            {
                 piece* promotion = echiquier_final.plateau[it->i1*8+it->j1];
                 tour type_prom;
                 promotion->a_bouger=true;
@@ -204,9 +211,11 @@ echiquier construction_echiquier(Position_Echec& P){
                 promotion->y = it->j2;
                 echiquier_final.plateau[it->i2*8+it->j2] = promotion;
                 echiquier_final.plateau[it->i1*8+it->j1] = nullptr;
+            }
 
         }
         else if (it->prom_c == true){
+            if (echiquier_final.plateau[it->i1*8+it->j1] != nullptr){
                 piece* promotion = echiquier_final.plateau[it->i1*8+it->j1];
                 cavalier type_prom;
                 promotion->a_bouger=true;
@@ -215,6 +224,7 @@ echiquier construction_echiquier(Position_Echec& P){
                 promotion->y = it->j2;
                 echiquier_final.plateau[it->i2*8+it->j2] = promotion;
                 echiquier_final.plateau[it->i1*8+it->j1] = nullptr;
+            }
 
         }
         else if (echiquier_final.plateau[it->i1*8+it->j1] != nullptr)
@@ -338,9 +348,7 @@ bool Position_Echec::test_echec(){
             }
 
 
-        }
-    this->echiquier_ref.affichage();
-    cout<<"================================"<<endl;
+    }
     for (int i = 0; i < 8; i++) {
         for (int j = 0; j < 8; j++) {
                 if (((echiquier_ref.plateau[8*i+j])!=nullptr) &&
@@ -1110,7 +1118,7 @@ Position_Echec& Position_Echec::position_possible()
                             if (actuel == nullptr)
                             {
                                 //Promotion fou
-                                coup_echec C("prom_f",Pc, i, j, i - 1, j); //Nouveau coup_echec
+                                coup_echec C("prom_f",Pc, i, j, i + 1, j); //Nouveau coup_echec
                             //On crée la nouvelle soeur et on change la couleur
                                 Position_Echec* nouvelle_soeur = new Position_Echec;
                                 nouvelle_soeur->couleur_joueur = turn;
@@ -1122,7 +1130,7 @@ Position_Echec& Position_Echec::position_possible()
                                 this->fille = nouvelle_soeur;
 
                                 //Promotion Tour
-                                coup_echec D("prom_t",Pc, i, j, i - 1, j); //Nouveau coup_echec
+                                coup_echec D("prom_t",Pc, i, j, i + 1, j); //Nouveau coup_echec
                             //On crée la nouvelle soeur et on change la couleur
                                 Position_Echec* nouvelle_soeur1 = new Position_Echec;
                                 nouvelle_soeur1->couleur_joueur = turn;
@@ -1134,7 +1142,7 @@ Position_Echec& Position_Echec::position_possible()
                                 this->fille = nouvelle_soeur1;
 
                                 //Promotion dame
-                                coup_echec E("prom_d",Pc, i, j, i - 1, j); //Nouveau coup_echec
+                                coup_echec E("prom_d",Pc, i, j, i + 1, j); //Nouveau coup_echec
                             //On crée la nouvelle soeur et on change la couleur
                                 Position_Echec* nouvelle_soeur2 = new Position_Echec;
                                 nouvelle_soeur2->couleur_joueur = turn;
@@ -1146,7 +1154,7 @@ Position_Echec& Position_Echec::position_possible()
                                 this->fille = nouvelle_soeur2;
 
                                 //Promotion cavalier
-                                coup_echec F("prom_c",Pc, i, j, i - 1, j); //Nouveau coup_echec
+                                coup_echec F("prom_c",Pc, i, j, i + 1, j); //Nouveau coup_echec
                             //On crée la nouvelle soeur et on change la couleur
                                 Position_Echec* nouvelle_soeur3 = new Position_Echec;
                                 nouvelle_soeur3->couleur_joueur = turn;
@@ -1201,7 +1209,7 @@ Position_Echec& Position_Echec::position_possible()
                                 if (actuel->P.Nom_piece != Roi) //Et que c'est pas un roi
                                 {
                                     //Promotion fou
-                                    coup_echec C("prom_f",Pc,actuel, i, j, i - 1, j + 1); //Nouveau coup_echec
+                                    coup_echec C("prom_f",Pc,actuel, i, j, i + 1, j + 1); //Nouveau coup_echec
                                      //On crée la nouvelle soeur et on change la couleur
                                     Position_Echec* nouvelle_soeur = new Position_Echec;
                                     nouvelle_soeur->couleur_joueur = turn;
@@ -1212,7 +1220,7 @@ Position_Echec& Position_Echec::position_possible()
                                     this->fille = nouvelle_soeur;
 
                                     //Promotion tour
-                                    coup_echec D("prom_t",Pc,actuel, i, j, i - 1, j + 1); //Nouveau coup_echec
+                                    coup_echec D("prom_t",Pc,actuel, i, j, i + 1, j + 1); //Nouveau coup_echec
                                      //On crée la nouvelle soeur et on change la couleur
                                     Position_Echec* nouvelle_soeur2 = new Position_Echec;
                                     nouvelle_soeur->couleur_joueur = turn;
@@ -1223,7 +1231,7 @@ Position_Echec& Position_Echec::position_possible()
                                     this->fille = nouvelle_soeur2;
 
                                     //Promotion dame
-                                    coup_echec E("prom_d",Pc,actuel, i, j, i - 1, j + 1); //Nouveau coup_echec
+                                    coup_echec E("prom_d",Pc,actuel, i, j, i + 1, j + 1); //Nouveau coup_echec
                                      //On crée la nouvelle soeur et on change la couleur
                                     Position_Echec* nouvelle_soeur3 = new Position_Echec;
                                     nouvelle_soeur->couleur_joueur = turn;
@@ -1234,7 +1242,7 @@ Position_Echec& Position_Echec::position_possible()
                                     this->fille = nouvelle_soeur3;
 
                                     //Promotion cavalier
-                                    coup_echec F("prom_c",Pc,actuel, i, j, i - 1, j + 1); //Nouveau coup_echec
+                                    coup_echec F("prom_c",Pc,actuel, i, j, i + 1, j + 1); //Nouveau coup_echec
                                      //On crée la nouvelle soeur et on change la couleur
                                     Position_Echec* nouvelle_soeur4 = new Position_Echec;
                                     nouvelle_soeur4->couleur_joueur = turn;
@@ -1273,7 +1281,7 @@ Position_Echec& Position_Echec::position_possible()
                                 if (actuel->P.Nom_piece != Roi) //Et que c'est pas un roi
                                 {
                                     //Promotion fou
-                                    coup_echec C("prom_f",Pc,actuel, i, j, i - 1, j + 1); //Nouveau coup_echec
+                                    coup_echec C("prom_f",Pc,actuel, i, j, i + 1, j + 1); //Nouveau coup_echec
                                      //On crée la nouvelle soeur et on change la couleur
                                     Position_Echec* nouvelle_soeur = new Position_Echec;
                                     nouvelle_soeur->couleur_joueur = turn;
@@ -1284,7 +1292,7 @@ Position_Echec& Position_Echec::position_possible()
                                     this->fille = nouvelle_soeur;
 
                                     //Promotion tour
-                                    coup_echec D("prom_t",Pc,actuel, i, j, i - 1, j + 1); //Nouveau coup_echec
+                                    coup_echec D("prom_t",Pc,actuel, i, j, i + 1, j + 1); //Nouveau coup_echec
                                      //On crée la nouvelle soeur et on change la couleur
                                     Position_Echec* nouvelle_soeur2 = new Position_Echec;
                                     nouvelle_soeur2->couleur_joueur = turn;
@@ -1295,7 +1303,7 @@ Position_Echec& Position_Echec::position_possible()
                                     this->fille = nouvelle_soeur2;
 
                                     //Promotion dame
-                                    coup_echec E("prom_d",Pc,actuel, i, j, i - 1, j + 1); //Nouveau coup_echec
+                                    coup_echec E("prom_d",Pc,actuel, i, j, i + 1, j + 1); //Nouveau coup_echec
                                      //On crée la nouvelle soeur et on change la couleur
                                     Position_Echec* nouvelle_soeur3 = new Position_Echec;
                                     nouvelle_soeur3->couleur_joueur = turn;
@@ -1305,7 +1313,7 @@ Position_Echec& Position_Echec::position_possible()
                                     this->fille = nouvelle_soeur3;
 
                                     //Promotion cavalier
-                                    coup_echec F("prom_c",Pc,actuel, i, j, i - 1, j + 1); //Nouveau coup_echec
+                                    coup_echec F("prom_c",Pc,actuel, i, j, i + 1, j + 1); //Nouveau coup_echec
                                      //On crée la nouvelle soeur et on change la couleur
                                     Position_Echec* nouvelle_soeur4 = new Position_Echec;
                                     nouvelle_soeur4->couleur_joueur = turn;
