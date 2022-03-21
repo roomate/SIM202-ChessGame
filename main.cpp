@@ -60,7 +60,6 @@ int main()
                 while (fille != nullptr)
                 {
                     minimaxi = minimax(*fille,0,0,9);
-                    fille->print_position();
                     if (minimaxi<maxi)
                     {
                         P = dynamic_cast<Position_Morpion &> (*fille);
@@ -88,25 +87,5 @@ int main()
     {
         cout<<"Le match est nul"<<endl;
     }
-
-//    Position_Morpion P(2);
-//    P.G[0] = 1;
-//    P.G[1] = 0;
-//    P.G[2] = 0;
-//    P.G[3] = 0;
-//    P.G[4] = 1;
-//    P.G[5] = 0;
-//    P.G[6] = 0;
-//    P.G[7] = 2;
-//    P.G[8] = 0;
-//    P.position_possible();
-//    Position* fille = P.fille;
-//    while (fille!= nullptr)
-//    {
-//        fille->print_position();
-//        fille = fille->soeur;
-//    }
-
-
     return 0;
 }
