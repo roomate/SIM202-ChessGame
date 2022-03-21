@@ -11,7 +11,7 @@ int main(){
     Position_Echec pos(echiquier_d);
     int minimaxi;
     int mini;
-    int depth = 1;
+    int depth = 2;
     bool victoire_joueur = false; //Il joue les blancs
     bool victoire_ordi = false; //Il joue les noirs
     bool nul = false;
@@ -55,6 +55,7 @@ int main(){
         {
             posi.fille = nullptr;
             posi.position_possible();
+            Position_Echec& parent = posi;
             if (posi.fille != nullptr)
             {
                 Position* fille = posi.fille->soeur;
@@ -73,6 +74,7 @@ int main(){
                 }
                 posi.mise_a_jour_position();
                 posi.joueur = 1;
+                parent.libere_fille(&posi);
             }
         }
         bool test_echecmat = posi.test_echec_mat();
