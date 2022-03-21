@@ -272,6 +272,13 @@ double Position_Echec::valeur_position(){
     }
 }
 
+bool interieur_plateau(int i,int j)
+{
+    if (i>= 0 && i<8 && j >=0 && j<8){
+        return true;}
+    return false;
+}
+
 
 
 bool Position_Echec::test_echec(){
@@ -312,7 +319,7 @@ bool Position_Echec::test_echec(){
                                     if ( (i + (m)*Dep[0][l]== pos_x_roi) && (j + (m)*Dep[1][l]== pos_y_roi) ){
                                             return true;
                                         }
-                                    while (  (echiquier_ref.plateau[8*(i + m*Dep[0][l]) + j + m*Dep[1][l]]== nullptr) && (m<7)){
+                                    while (  (interieur_plateau(i + m*Dep[0][l],  j + m*Dep[1][l])) && (echiquier_ref.plateau[8*(i + m*Dep[0][l]) + j + m*Dep[1][l]]== nullptr) && (m<7)){
                                         if ( (i + (m+1)*Dep[0][l]== pos_x_roi) && (j + (m+1)*Dep[1][l]== pos_y_roi) ){
                                             return true;
                                         }
@@ -337,6 +344,10 @@ bool Position_Echec::test_echec(){
         }
         return false;
 }
+
+
+
+
 
 bool Position_Echec::test_echec_mat(){
     if ((*this).test_echec() == false){
