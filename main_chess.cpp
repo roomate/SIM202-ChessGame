@@ -11,27 +11,27 @@ int main(){
     Position_Echec pos(echiquier_d);
     int minimaxi;
     int mini;
-    int depth = 3;
+    int depth = 2;
     bool victoire_joueur = false; //Il joue les blancs
     bool victoire_ordi = false; //Il joue les noirs
     bool nul = false;
     string C;
-    cout<<"Voulez-vous jouez les blancs ou les Noirs ?"<<endl;
+    cout<<"Voulez-vous jouez les Blancs ou les Noirs ?"<<endl;
     cin>>C;
     while (C != "Blanc" && C != "Noir")
     {
         cout<<"Ca ne correspond à aucune couleur"<<endl;
+        cin>>C;
     }
     if (C == "Blanc")
     {
-        pos.couleur_joueur = Blanc;
         pos.joueur = 1;
     }
     else if (C == "Noir")
     {
-        pos.couleur_joueur = Noir;
-        pos.joueur = 0;
+        pos.joueur = 2;
     }
+    pos.couleur_joueur = Blanc;
     Position_Echec& posi = pos;
     while (victoire_joueur == false && victoire_ordi == false && nul == false)
     {
@@ -49,9 +49,9 @@ int main(){
         {
             posi.coup_humain();
             posi.mise_a_jour_position();
-            posi.joueur = 0;
+            posi.joueur = 2;
         }
-        else if (posi.joueur == 0)
+        else if (posi.joueur == 2)
         {
             posi.fille = nullptr;
             posi.position_possible();
@@ -106,3 +106,13 @@ int main(){
     }
     return 0;
 }
+
+
+
+
+
+
+
+
+
+
