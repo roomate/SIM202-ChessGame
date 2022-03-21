@@ -379,7 +379,7 @@ public:
         couleur_c = piece_jouee->Couleur;
 
     }
-    coup_echec(char* nom_coup,PieceColor couleur){ //onstructeur pour les roocs
+    coup_echec(char const* nom_coup,PieceColor couleur){ //onstructeur pour les roocs
         couleur_c = couleur;
         p_rooc = false;
         g_rooc = false;
@@ -392,7 +392,7 @@ public:
 
 
     }
-    coup_echec(char* nom_coup,piece* piece_jouee,int x_init, int y_init, int x_final, int y_final){ //Constructeur pour les promotions
+    coup_echec(char const* nom_coup,piece* piece_jouee,int x_init, int y_init, int x_final, int y_final){ //Constructeur pour les promotions
     if (piece_jouee!=nullptr){
         piece* p_temp = new piece(piece_jouee->P.Nom_piece,piece_jouee->Couleur,piece_jouee->x,piece_jouee->y);
         PJ = p_temp;
@@ -415,7 +415,7 @@ public:
     couleur_c = piece_jouee->Couleur;
     }
 
-    coup_echec(char* nom_coup,piece* piece_jouee,piece* piece_prise,int x_init, int y_init, int x_final, int y_final){ //Constructeur pour les promotions avec prise
+    coup_echec(char const* nom_coup,piece* piece_jouee,piece* piece_prise,int x_init, int y_init, int x_final, int y_final){ //Constructeur pour les promotions avec prise
     if (piece_jouee!=nullptr){
         piece* p_temp = new piece(piece_jouee->P.Nom_piece,piece_jouee->Couleur,piece_jouee->x,piece_jouee->y);
         PJ = p_temp;
