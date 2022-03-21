@@ -105,7 +105,6 @@ void coup_echec::affichage_standard(){
 
 
 echiquier construction_echiquier(Position_Echec& P){
-    int N = sizeof(P.Liste_coup);
     echiquier echiquier_final = P.echiquier_ref; //Il faut un constructeur par copie ?
     list<coup_echec>::iterator it;
     for (it=P.Liste_coup.begin();it!=P.Liste_coup.end();it++){
@@ -259,10 +258,10 @@ double Position_Echec::valeur_position(){
     } else {
         for(int i = 0; i<64;i++){
             if (this->echiquier_ref.plateau[i] != NULL)
-                if (this->echiquier_ref.plateau[i]->Couleur = Blanc){
+                if (this->echiquier_ref.plateau[i]->Couleur == Blanc){
                     cont_blanc = cont_blanc +1;
                     val_blanc = val_blanc + this->echiquier_ref.plateau[i]->P.valeur;
-                } else if (this->echiquier_ref.plateau[i]->Couleur = Noir){
+                } else if (this->echiquier_ref.plateau[i]->Couleur == Noir){
                     cont_noir = cont_noir +1;
                     val_noir = val_noir + this->echiquier_ref.plateau[i]->P.valeur;
                 }
