@@ -39,7 +39,6 @@ public:
     int valeur;
     ~type_piece(){
         Dep_rel.clear();
-
     }
 
 };
@@ -148,9 +147,6 @@ public:
     int y;
     bool a_bouger = false;
     //Constructeur de la classe
-    ~piece(){
-
-    }
     piece(piece& p){
         x = p.x;
         y = p.y;
@@ -251,8 +247,8 @@ public:
             if (plateau[i] != NULL){
                 delete plateau[i];
             }
-        plateau.clear();
         }
+        plateau.clear();
     }
 };
 
@@ -276,15 +272,11 @@ public:
     void affichage_standard();
 
     coup_echec(){
-
-    }
-    ~coup_echec(){ //destructeur
-        if (PJ!=nullptr){
+        if (PJ != nullptr)
+        {
             delete PJ;
         }
-        if (Pprise!=nullptr){
-            delete Pprise;
-        }
+        if (Pprise != nullptr){delete Pprise;}
     }
 
     coup_echec(const coup_echec &c){
@@ -454,12 +446,38 @@ public:
     coup_echec Dernier_coup;
     list<coup_echec> Liste_coup;
     echiquier echiquier_ref;
+    void libere_fille(Position_Echec* P)
+    {
+        Position_Echec* pfille = dynamic_cast<Position_Echec*>(fille);
+        while (pfille != nullptr)
+        {
+            Position_Echec* next = dynamic_cast<Position_Echec*>(pfille->soeur);
+            if (pfille != P)
+            {
+                pfille->libere_fille(P);
+                delete pfille;
+            }
+            pfille = next;
+        }
+    }
 
     Position_Echec(){
         //Liste_coup = new coup_echec[10];
     }
+//    ~Position_Echec()
+//    {
+//        delete Liste_coup;
+//        if (fille != nullptr)
+//        {
+//            delete fille;
+//        }
+//        if (soeur != nullptr)
+//        {
+//            delete soeur;
+//        }
+//    }
 
-    Position_Echec& position_possible(); //a def
+    Position_Echec& position_possible();
     double valeur_position() const {return 0;} //a def
     bool test_echec();
     bool gagne()const {return true;} //correspond au test d'echec et mat
@@ -467,10 +485,6 @@ public:
     bool test_g_rooc();
 
     Position_Echec& coup_humain();
-
-    ~Position_Echec(){              //def du destrcuteur
-        Liste_coup.clear();
-    }
 
     bool test_match_nul();
     bool test_echec_mat();
