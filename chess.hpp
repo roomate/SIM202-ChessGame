@@ -93,8 +93,7 @@ public:
 
 
 		vector<vector<int>> Tableau{{ 1, 1, -1, -1, 2, 2, -2, -2 },
-                                    { -2, 2, 2, -2, 1, -1, 1, -1},
-                                    { 1, 1, 1, 1, 1, 1, 1, 1 } };
+                                    { -2, 2, 2, -2, 1, -1, 1, -1}};
 
 
 
@@ -205,7 +204,7 @@ public:
             case Fou : return("F");
             case Tour : return("T");
         }
-	return("erreur string type");
+        return ("erreur string_type");
     }
 };
 
@@ -265,14 +264,14 @@ public:
     int j1;
     int j2;
     piece* Pprise = nullptr;
-    bool p_rooc;
-    bool g_rooc;
-    bool prom_f;
-    bool prom_d;
-    bool prom_c;
-    bool prom_t;
-    bool echec;
-    bool echec_mat;
+    bool p_rooc = false;
+    bool g_rooc = false;
+    bool prom_f = false;
+    bool prom_d = false;
+    bool prom_c = false;
+    bool prom_t = false;
+    bool echec = false;
+    bool echec_mat = false;
     void affichage_standard();
 
     coup_echec(){
@@ -312,31 +311,33 @@ public:
 
     }
 
-    coup_echec &operator=(const coup_echec &c){
-        if (c.PJ!=nullptr){
-            piece* p_temp = new piece(c.PJ->P.Nom_piece,c.PJ->Couleur,c.PJ->x,c.PJ->y);
-            this->PJ = p_temp;
-        }
-        if (c.Pprise != nullptr){
-            piece* pprise_temp = new piece(c.Pprise->P.Nom_piece,c.Pprise->Couleur,c.Pprise->x,c.Pprise->y);
-            this->Pprise = pprise_temp;
-        }
-        this->couleur_c = c.couleur_c;
-        this->i1 = c.i1;
-        this->i2 = c.i2;
-        this->j1 = c.j1;
-        this->j2 = c.j2;
-        this->p_rooc = c.p_rooc;
-        this->g_rooc = c.g_rooc;
-        this->prom_f = c.prom_f;
-        this->prom_d = c.prom_d;
-        this->prom_c = c.prom_c;
-        this->prom_t = c.prom_t;
-        this->echec = c.echec;
-        this->echec_mat = c.echec_mat;
-        return *this;
-
-    }
+//    coup_echec &operator=(const coup_echec &c){
+//        if (c.PJ!=nullptr)
+//        {
+//            piece* p_temp = new piece(c.PJ->P.Nom_piece,c.PJ->Couleur,c.PJ->x,c.PJ->y);
+//            this->PJ = p_temp;
+//        }
+//        if (c.Pprise != nullptr)
+//        {
+//            piece* pprise_temp = new piece(c.Pprise->P.Nom_piece,c.Pprise->Couleur,c.Pprise->x,c.Pprise->y);
+//            this->Pprise = pprise_temp;
+//        }
+//        this->couleur_c = c.couleur_c;
+//        this->i1 = c.i1;
+//        this->i2 = c.i2;
+//        this->j1 = c.j1;
+//        this->j2 = c.j2;
+//        this->p_rooc = c.p_rooc;
+//        this->g_rooc = c.g_rooc;
+//        this->prom_f = c.prom_f;
+//        this->prom_d = c.prom_d;
+//        this->prom_c = c.prom_c;
+//        this->prom_t = c.prom_t;
+//        this->echec = c.echec;
+//        this->echec_mat = c.echec_mat;
+//        return *this;
+//
+//    }
 
 
 
