@@ -5,6 +5,7 @@
 #include <cmath>
 #include <vector>
 #include <list>
+#include <cstring>
 
 using namespace std;
 
@@ -386,8 +387,8 @@ public:
         prom_d = false;
         prom_c = false;
         prom_t = false;
-        if (nom_coup == "p_rooc"){p_rooc = true;}
-        if (nom_coup == "g_rooc"){g_rooc = true;}
+        if (strcmp(nom_coup,"p_rooc")==0){p_rooc = true;}
+        if (strcmp(nom_coup,"g_rooc")==0){g_rooc = true;}
 
 
     }
@@ -403,10 +404,10 @@ public:
     prom_d = false;
     prom_c = false;
     prom_t = false;
-    if (nom_coup == "prom_f"){prom_f = true;}
-    if (nom_coup == "prom_d"){prom_d = true;}
-    if (nom_coup == "prom_c"){prom_c = true;}
-    if (nom_coup == "prom_t"){prom_t = true;}
+    if (strcmp(nom_coup,"prom_f")==0){prom_f = true;}
+    if (strcmp(nom_coup,"prom_d")==0){prom_d = true;}
+    if (strcmp(nom_coup,"prom_c")==0){prom_c = true;}
+    if (strcmp(nom_coup,"prom_t")==0){prom_t = true;}
     i1 = x_init;
     i2 = x_final;
     j2 = y_final;
@@ -430,10 +431,10 @@ public:
     prom_d = false;
     prom_c = false;
     prom_t = false;
-    if (nom_coup == "prom_f"){prom_f = true;}
-    if (nom_coup == "prom_d"){prom_d = true;}
-    if (nom_coup == "prom_c"){prom_c = true;}
-    if (nom_coup == "prom_t"){prom_t = true;}
+    if (strcmp(nom_coup,"prom_f")==0){prom_f = true;}
+    if (strcmp(nom_coup,"prom_d")==0){prom_d = true;}
+    if (strcmp(nom_coup,"prom_c")==0){prom_c = true;}
+    if (strcmp(nom_coup,"prom_t")==0){prom_t = true;}
     i1 = x_init;
     i2 = x_final;
     j2 = y_final;
