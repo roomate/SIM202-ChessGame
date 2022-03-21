@@ -205,6 +205,7 @@ public:
             case Fou : return("F");
             case Tour : return("T");
         }
+	return("erreur string type");
     }
 };
 
