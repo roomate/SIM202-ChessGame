@@ -257,7 +257,7 @@ double Position_Echec::valeur_position(){
         return 0;
     } else {
         for(int i = 0; i<64;i++){
-            if (this->echiquier_ref.plateau[i] != NULL)
+            if (this->echiquier_ref.plateau[i] != NULL){
                 if (this->echiquier_ref.plateau[i]->Couleur == Blanc){
                     cont_blanc = cont_blanc +1;
                     val_blanc = val_blanc + this->echiquier_ref.plateau[i]->P.valeur;
@@ -265,6 +265,7 @@ double Position_Echec::valeur_position(){
                     cont_noir = cont_noir +1;
                     val_noir = val_noir + this->echiquier_ref.plateau[i]->P.valeur;
                 }
+	    }
         }
         val = alpha *(val_blanc - val_noir) + beta*(cont_blanc - cont_noir);
         return val;
