@@ -11,7 +11,7 @@ int main(){
     Position_Echec pos(echiquier_d);
     int minimaxi;
     int mini;
-    int depth = 2;
+    int depth = 1;
     bool victoire_joueur = false; //Il joue les blancs
     bool victoire_ordi = false; //Il joue les noirs
     bool nul = false;
@@ -107,7 +107,27 @@ int main(){
     return 0;
 }
 
-
+//int main(){
+//
+//    echiquier echiquier_d = echiquier_test_echec_mat();
+//    echiquier_d.affichage();
+//    cout<<"==================================="<<endl;
+//////    piece* actuel = echiquier_d.plateau[8*7 + 1];
+//////    coup_echec C(actuel, 7, 1, 5, 0);
+//    Position_Echec E(echiquier_d);
+//    //E.echiquier_ref.affichage();
+//    E.couleur_joueur = Blanc;
+//    E.position_possible();
+////    cout<<E.test_echec_mat()<<endl;
+////    Position_Echec* fille = dynamic_cast<Position_Echec*>(E.fille->soeur);
+////    fille->mise_a_jour_position();
+////    fille->echiquier_ref.affichage();
+//////    E.Liste_coup.push_back(C);
+//////    E.mise_a_jour_position();
+////    E.echiquier_ref.affichage();
+//    cout<<minimax(E,0,0,2)<<endl;
+//    return 0;
+//}
 
 
 
