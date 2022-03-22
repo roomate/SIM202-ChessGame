@@ -778,64 +778,74 @@ Position_Echec& Position_Echec::coup_humain(){ //Met le coup joué par le joueur
     cin >> reponse;
     string N("normal");
     string S("special");
+    string A("A");
+    string B("B");
+    string C("C");
+    string D("D");
+    string E("E");
+    string F("F");
+    string G("G");
+    string H("H");
+    int j_init;
+    int j_final;
+    int i_init;
+    int i_final;
     if (reponse == N){
-        //Recupération des donnees utilisateur
-        cout<<"Position de la piece a jouer ?"<<endl;
-        string pos_int;
-        cin >> pos_int;
-        cout<<"Position finale de la piece ?"<<endl;
-        string pos_final;
-        cin >> pos_final;
+        int n= 0;
+        while (n==0){
+            //Recupération des donnees utilisateur
+            cout<<"Position de la piece a jouer ?"<<endl;
+            string pos_int;
+            cin >> pos_int;
+            cout<<"Position finale de la piece ?"<<endl;
+            string pos_final;
+            cin >> pos_final;
 
-        //Analyse de ces données
-        char c1 = pos_int[1];
-        char c2 = pos_final[1];
-        string str_i_init(1,c1);
-        string str_i_final(1,c2);
-        pos_int.resize(1);
-        pos_final.resize(1);
-
-        int j_init;
-        int j_final;
-        int i_init;
-        int i_final;
-        stringstream ss;
-            ss << str_i_init;
-            ss >> i_init;
-        stringstream sss;
-            sss << str_i_final;
-            sss >> i_final;
-        i_init = i_init -1;
-        i_final = i_final -1;
-
-        string A("A");
-        string B("B");
-        string C("C");
-        string D("D");
-        string E("E");
-        string F("F");
-        string G("G");
-        string H("H");
+            //Analyse de ces données
+            char c1 = pos_int[1];
+            char c2 = pos_final[1];
+            string str_i_init(1,c1);
+            string str_i_final(1,c2);
+            pos_int.resize(1);
+            pos_final.resize(1);
 
 
-        if (pos_int==A){ j_init = 0 ;}
-        if (pos_int==B){ j_init = 1 ;}
-        if (pos_int==C){ j_init = 2 ;}
-        if (pos_int==D){ j_init = 3 ;}
-        if (pos_int==E){ j_init = 4 ;}
-        if (pos_int==F){ j_init = 5 ;}
-        if (pos_int==G){ j_init = 6 ;}
-        if (pos_int==H){ j_init = 7 ;}
+            stringstream ss;
+                ss << str_i_init;
+                ss >> i_init;
+            stringstream sss;
+                sss << str_i_final;
+                sss >> i_final;
+            i_init = i_init -1;
+            i_final = i_final -1;
 
-        if (pos_final==A){ j_final = 0 ;}
-        if (pos_final==B){ j_final = 1 ;}
-        if (pos_final==C){ j_final = 2 ;}
-        if (pos_final==D){ j_final = 3 ;}
-        if (pos_final==E){ j_final = 4 ;}
-        if (pos_final==F){ j_final = 5 ;}
-        if (pos_final==G){ j_final = 6 ;}
-        if (pos_final==H){ j_final = 7 ;}
 
+
+
+            if (pos_int==A){ j_init = 0 ;}
+            if (pos_int==B){ j_init = 1 ;}
+            if (pos_int==C){ j_init = 2 ;}
+            if (pos_int==D){ j_init = 3 ;}
+            if (pos_int==E){ j_init = 4 ;}
+            if (pos_int==F){ j_init = 5 ;}
+            if (pos_int==G){ j_init = 6 ;}
+            if (pos_int==H){ j_init = 7 ;}
+
+            if (pos_final==A){ j_final = 0 ;}
+            if (pos_final==B){ j_final = 1 ;}
+            if (pos_final==C){ j_final = 2 ;}
+            if (pos_final==D){ j_final = 3 ;}
+            if (pos_final==E){ j_final = 4 ;}
+            if (pos_final==F){ j_final = 5 ;}
+            if (pos_final==G){ j_final = 6 ;}
+            if (pos_final==H){ j_final = 7 ;}
+
+            if (this->echiquier_ref.plateau[i_init*8+j_init]->Couleur == this->couleur_joueur){
+                n=1;
+            } else {
+                cout<<"Ce n'est pas une pièce de la bonne couleur !"<<endl;
+            }
+        }
         //Mise à jour de la liste de coup de la position
 
         if (this->echiquier_ref.plateau[i_final*8+j_final] != nullptr){
@@ -874,6 +884,9 @@ Position_Echec& Position_Echec::coup_humain(){ //Met le coup joué par le joueur
             this->Liste_coup.push_back(coup_joue);
         }else if (reponse2 == prom_c || reponse2==prom_f || reponse2==prom_t || reponse2==prom_d){
             //Recupération des donnees utilisateur
+                    int n= 0;
+        while (n==0){
+            //Recupération des donnees utilisateur
             cout<<"Position de la piece a jouer ?"<<endl;
             string pos_int;
             cin >> pos_int;
@@ -889,27 +902,17 @@ Position_Echec& Position_Echec::coup_humain(){ //Met le coup joué par le joueur
             pos_int.resize(1);
             pos_final.resize(1);
 
-            int j_init;
-            int j_final;
-            int i_init;
-            int i_final;
+
             stringstream ss;
-            ss << str_i_init;
-            ss >> i_init;
+                ss << str_i_init;
+                ss >> i_init;
             stringstream sss;
-            sss << str_i_final;
-            sss >> i_final;
+                sss << str_i_final;
+                sss >> i_final;
             i_init = i_init -1;
             i_final = i_final -1;
 
-            string A("A");
-            string B("B");
-            string C("C");
-            string D("D");
-            string E("E");
-            string F("F");
-            string G("G");
-            string H("H");
+
 
 
             if (pos_int==A){ j_init = 0 ;}
@@ -930,6 +933,12 @@ Position_Echec& Position_Echec::coup_humain(){ //Met le coup joué par le joueur
             if (pos_final==G){ j_final = 6 ;}
             if (pos_final==H){ j_final = 7 ;}
 
+            if (this->echiquier_ref.plateau[i_init*8+j_init]->Couleur == this->couleur_joueur){
+                n=1;
+            } else {
+                cout<<"Ce n'est pas une pièce de la bonne couleur !"<<endl;
+            }
+        }
             if(reponse2 == prom_c){
                 if (this->echiquier_ref.plateau[i_final*8+j_final] != nullptr){
                     cout<<"Vous mangez une piece"<<endl;
@@ -997,6 +1006,7 @@ Position_Echec& Position_Echec::coup_humain(){ //Met le coup joué par le joueur
     }
     return(*this);
 }
+
 
 Position_Echec& Position_Echec::position_possible()
 {
