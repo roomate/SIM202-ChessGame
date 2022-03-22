@@ -1215,8 +1215,6 @@ Position_Echec& Position_Echec::position_possible()
                         {
                             presence = false;
                             int k = 1;
-                            int x = i + k*Dep[0][l];
-                            int y = j + k*Dep[1][l];
                             while (interieur_plateau(i + k*Dep[0][l],j + k*Dep[1][l]) && presence == false)
                             {
                                 piece* actuel = echiquier_ref.plateau[8*(i + k*Dep[0][l]) + j + k*Dep[1][l]];
