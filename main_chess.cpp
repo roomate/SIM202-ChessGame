@@ -11,7 +11,7 @@ int main(){
     Position_Echec pos(echiquier_d);
     int minimaxi;
     int mini;
-    int depth = 2;
+    int depth = 1;
     bool victoire_joueur = false; //Il joue les blancs
     bool victoire_ordi = false; //Il joue les noirs
     bool nul = false;
@@ -29,12 +29,13 @@ int main(){
     }
     else if (C == "Noir")
     {
-        pos.joueur = 2;
+        pos.joueur = 1;
     }
     pos.couleur_joueur = Blanc;
     Position_Echec& posi = pos;
     while (victoire_joueur == false && victoire_ordi == false && nul == false)
     {
+        cout<<"===================================="<<endl;
         posi.echiquier_ref.affichage();
         if (posi.test_echec()==true){
             if(posi.couleur_joueur == Blanc){
@@ -55,26 +56,24 @@ int main(){
         {
             posi.fille = nullptr;
             posi.position_possible();
-            Position_Echec& parent = posi;
             if (posi.fille != nullptr)
             {
-                Position* fille = posi.fille->soeur;
+                Position* Fille = posi.fille->soeur;
                 minimaxi = minimax(*posi.fille, 0,0 ,depth);
                 mini = minimaxi;
-                posi = dynamic_cast<Position_Echec&>(*fille);
-                while (fille != nullptr)
+                posi = dynamic_cast<Position_Echec&>(*Fille);
+                while (Fille != nullptr)
                 {
-                    minimaxi = minimax(*fille, 0, 0,depth);
+                    minimaxi = minimax(*Fille, 0, 0,depth);
                     if (minimaxi < mini)
                     {
-                        posi = dynamic_cast<Position_Echec&>(*fille);
+                        posi = dynamic_cast<Position_Echec&>(*Fille);
                         mini = minimaxi;
                     }
-                    fille = fille->soeur;
+                    Fille = Fille->soeur;
                 }
                 posi.mise_a_jour_position();
                 posi.joueur = 1;
-                parent.libere_fille(&posi);
             }
         }
         bool test_echecmat = posi.test_echec_mat();
@@ -89,10 +88,10 @@ int main(){
                 victoire_ordi = true;
             }
         }
- //       if (posi.test_match_nul()==true){
- //           cout<<"C'est un match nul !"<<endl;
- //           nul = true;
-        cout<<"==================================="<<endl;
+    }
+    if (posi.test_match_nul()==true){
+        cout<<"C'est un match nul !"<<endl;
+        nul = true;
     }
     if (victoire_joueur == true && victoire_ordi == false)
     {
@@ -109,25 +108,53 @@ int main(){
     return 0;
 }
 
-//int main(){
+//int main(){ //Main pour les tests
+//
 //
 //    echiquier echiquier_d = echiquier_test_echec_mat();
 //    echiquier_d.affichage();
 //    cout<<"==================================="<<endl;
-//////    piece* actuel = echiquier_d.plateau[8*7 + 1];
+//
 //////    coup_echec C(actuel, 7, 1, 5, 0);
 //    Position_Echec E(echiquier_d);
 //    //E.echiquier_ref.affichage();
-//    E.couleur_joueur = Blanc;
+//    E.couleur_joueur = Noir;
 //    E.position_possible();
+////    E = dynamic_cast<Position_Echec&>(*E.fille);
+////    E.mise_a_jour_position();
+////    E.echiquier_ref.affichage();
+//
+//
 ////    cout<<E.test_echec_mat()<<endl;
 ////    Position_Echec* fille = dynamic_cast<Position_Echec*>(E.fille->soeur);
 ////    fille->mise_a_jour_position();
 ////    fille->echiquier_ref.affichage();
-//////    E.Liste_coup.push_back(C);
-//////    E.mise_a_jour_position();
-////    E.echiquier_ref.affichage();
-//    cout<<minimax(E,0,0,2)<<endl;
+////    E.Liste_coup.push_back(C);
+////    E.mise_a_jour_position();
+//
+//    int minimaxi;
+//    int mini;
+//    if (E.fille != nullptr)
+//    {
+//        Position* Fille = E.fille->soeur;
+//        minimaxi = minimax(*E.fille, 0,0 ,1);
+//        mini = minimaxi;
+//        E = dynamic_cast<Position_Echec&>(*Fille);
+//        while (Fille != nullptr)
+//        {
+//            minimaxi = minimax(*Fille, 0, 0,1);
+//            Fille = dynamic_cast<Position_Echec&>(*Fille);
+//            cout<<minimaxi<<endl;
+//            if (minimaxi < mini)
+//            {
+//                E = dynamic_cast<Position_Echec&>(*Fille);
+//                mini = minimaxi;
+//            }
+//        Fille = Fille->soeur;
+//        }
+//    }
+//    E.mise_a_jour_position();
+//    E.echiquier_ref.affichage();
 //    return 0;
 //}
 
