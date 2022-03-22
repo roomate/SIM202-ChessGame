@@ -675,13 +675,13 @@ echiquier echiquier_test_echec_mat()
 {
     echiquier E;
 
-    piece* P_4= new piece(Roi,Blanc,0,4);
-    E.plateau[4]= P_4;
+    piece* P_4= new piece(Roi,Blanc,0,7);
+    E.plateau[7]= P_4;
 
-    piece* P_59= new piece(Dame,Noir,7,4);
-    E.plateau[60]= P_59;
-    piece* P_9= new piece(Tour,Noir,5,3);
-    E.plateau[43]= P_9;
+    piece* P_59= new piece(Dame,Noir,7,5);
+    E.plateau[61]= P_59;
+    piece* P_9= new piece(Tour,Noir,5,6);
+    E.plateau[46]= P_9;
 
   //  piece* PT = new piece(Tour, Noir, 6, 5);
   //  E.plateau[53]= PT;
@@ -1052,12 +1052,14 @@ Position_Echec& Position_Echec::position_possible()
                         {
                             presence = false;
                             int k = 1;
+                            int x = i + k*Dep[0][l];
+                            int y = j + k*Dep[1][l];
                             while (interieur_plateau(i + k*Dep[0][l],j + k*Dep[1][l]) && presence == false && k<8)
                             {
                                 piece* actuel = echiquier_ref.plateau[8*(i + k*Dep[0][l]) + j + k*Dep[1][l]];
                                 if (actuel == nullptr) //Si la case est vide
                                 {
-                                    coup_echec C(Pc, i, j, i + Dep[0][1], j + Dep[1][l]); //Nouveau coup_echec
+                                    coup_echec C(Pc, i, j, i + k*Dep[0][l], j + k*Dep[1][l]); //Nouveau coup_echec
 
                                     //On crée la nouvelle soeur et on change la couleur
                                     Position_Echec* nouvelle_soeur = new Position_Echec;
@@ -1068,10 +1070,11 @@ Position_Echec& Position_Echec::position_possible()
                                     nouvelle_soeur->soeur = this->fille;
                                     this->fille = nouvelle_soeur;
                                     ++k;
+
                                 }
                                 else if (actuel->Couleur != turn && actuel->P.Nom_piece!=Roi) //Une piece est sur le chemin : ce n'est ni une pièce allié, ni le roi
                                 {
-                                    coup_echec C(Pc,actuel, i, j, i + Dep[0][1], j + Dep[1][l]); //Nouveau coup_echec
+                                    coup_echec C(Pc,actuel, i, j, i + k*Dep[0][1], j + k*Dep[1][l]); //Nouveau coup_echec
 
                                     //On crée la nouvelle soeur et on change la couleur
                                     Position_Echec* nouvelle_soeur = new Position_Echec;
