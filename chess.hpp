@@ -479,7 +479,8 @@ public:
 
     Position_Echec& position_possible();
     double valeur_position() const {return 0;} //a def
-    bool test_echec();
+    bool test_echec(); //Test echec pour regarder si le roi adverse est en échec ou non
+    bool test_echec2(); //Test echec lorsque le joueur bouge son roi
     bool gagne()const {return true;} //correspond au test d'echec et mat
     bool test_p_rooc();
     bool test_g_rooc();
@@ -524,6 +525,10 @@ echiquier construction_echiquier(Position_Echec& P);
 echiquier echiquier_test_echec();
 echiquier echiquier_test_echec_mat();
 echiquier echiquier_piece();
+echiquier echiquier_test_pion();
+
+
+void affichage_fille(Position_Echec& P);
 
 int minimax(Position &P, int alpha, int beta, int depth);
 bool interieur_plateau(int i,int j);
