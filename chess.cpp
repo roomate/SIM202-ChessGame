@@ -851,11 +851,12 @@ int minimax(Position &P, int alpha, int beta, int depth)
 //    cout<<"         debut           "<<endl;
 //    cout<<"         ======          "<<endl;
 //    P.print_position();
-    int c = P.valeur_position();
-    if ( c == MIN || c == MAX)
-    {
-        return c;
-    }
+ //   int c = P.valeur_position();
+  //  if ( c == MIN || c == MAX)
+  //  {
+  //      return c;
+ //   }
+
     P.position_possible();
     Position* pFilles= P.fille;
     int a = alpha;
@@ -864,7 +865,7 @@ int minimax(Position &P, int alpha, int beta, int depth)
 //	 leaf node is reached
 	if ( pFilles == nullptr || depth == 0) {
 //        cout<<"Valeur de la position finale "<<a<<endl;
-		return c;
+		return P.valeur_position();
 	}
     if (P.joueur == 1)
     {
