@@ -306,33 +306,33 @@ public:
 
     }
 
-//    coup_echec &operator=(const coup_echec &c){
-//        if (c.PJ!=nullptr)
-//        {
-//            piece* p_temp = new piece(c.PJ->P.Nom_piece,c.PJ->Couleur,c.PJ->x,c.PJ->y);
-//            this->PJ = p_temp;
-//        }
-//        if (c.Pprise != nullptr)
-//        {
-//            piece* pprise_temp = new piece(c.Pprise->P.Nom_piece,c.Pprise->Couleur,c.Pprise->x,c.Pprise->y);
-//            this->Pprise = pprise_temp;
-//        }
-//        this->couleur_c = c.couleur_c;
-//        this->i1 = c.i1;
-//        this->i2 = c.i2;
-//        this->j1 = c.j1;
-//        this->j2 = c.j2;
-//        this->p_rooc = c.p_rooc;
-//        this->g_rooc = c.g_rooc;
-//        this->prom_f = c.prom_f;
-//        this->prom_d = c.prom_d;
-//        this->prom_c = c.prom_c;
-//        this->prom_t = c.prom_t;
-//        this->echec = c.echec;
-//        this->echec_mat = c.echec_mat;
-//        return *this;
-//
-//    }
+    coup_echec &operator=(const coup_echec &c){
+        if (c.PJ!=nullptr)
+        {
+            piece* p_temp = new piece(c.PJ->P.Nom_piece,c.PJ->Couleur,c.PJ->x,c.PJ->y);
+            this->PJ = p_temp;
+        }
+        if (c.Pprise != nullptr)
+        {
+            piece* pprise_temp = new piece(c.Pprise->P.Nom_piece,c.Pprise->Couleur,c.Pprise->x,c.Pprise->y);
+            this->Pprise = pprise_temp;
+        }
+        this->couleur_c = c.couleur_c;
+        this->i1 = c.i1;
+        this->i2 = c.i2;
+        this->j1 = c.j1;
+        this->j2 = c.j2;
+        this->p_rooc = c.p_rooc;
+        this->g_rooc = c.g_rooc;
+        this->prom_f = c.prom_f;
+        this->prom_d = c.prom_d;
+        this->prom_c = c.prom_c;
+        this->prom_t = c.prom_t;
+        this->echec = c.echec;
+        this->echec_mat = c.echec_mat;
+        return *this;
+
+    }
 
 
 
