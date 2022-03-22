@@ -104,7 +104,6 @@ void coup_echec::affichage_standard(){
 //    "Construction de l'echiquier"
 //======================================
 
-
 echiquier construction_echiquier(Position_Echec& P){
     echiquier echiquier_final = P.echiquier_ref; //Il faut un constructeur par copie ?
     list<coup_echec>::iterator it;
@@ -229,6 +228,7 @@ echiquier construction_echiquier(Position_Echec& P){
         }
         else if (echiquier_final.plateau[it->i1*8+it->j1] != nullptr)
         {
+            echiquier_final.plateau[it->i2*8+it->j2] = nullptr;
             piece* temp = echiquier_final.plateau[it->i1*8+it->j1];
             temp->x = it->i2;
             temp->y = it->j2;
@@ -240,6 +240,30 @@ echiquier construction_echiquier(Position_Echec& P){
         }
     }
     return(echiquier_final);
+}
+
+
+//====================================
+//     "Affichage fille "
+//==================================
+
+void affichage_fille(Position_Echec& posi)
+{
+    posi.fille = nullptr;
+    posi.position_possible();
+    if (posi.fille != nullptr)
+    {
+        Position_Echec* Fille = dynamic_cast<Position_Echec*>(posi.fille);
+        while (Fille != nullptr)
+        {
+            posi = *Fille;
+            posi.mise_a_jour_position();
+            cout<<"================================="<<endl;
+            posi.echiquier_ref.affichage();
+            cout<<"================================="<<endl;
+            Fille = dynamic_cast<Position_Echec*>(Fille->soeur);
+        }
+    }
 }
 
 
@@ -262,7 +286,6 @@ Position_Echec& Position_Echec::mise_a_jour_position(){ //Met à jour l'echiquie
         this->couleur_joueur = Blanc;
         //cout<<"c'est maintenant au joueur blanc de jouer"<<endl;
     }
-
     echiquier_ref = construction_echiquier(*this); //Mise à jour de l'echiquier
 
 
@@ -280,20 +303,20 @@ double Position_Echec::valeur_position(){
     int val_noir = 0;
     int val;
     this->mise_a_jour_position();
-    if (this->test_echec_mat()==true)
+    if (this->test_echec_mat()==true) //Si le joueur 1 ou 2 est mis en echec et mat
     {
             if (this->joueur == 1)
             {
-                return MIN;
+                return MIN; //Si le joueur est mis en echec et mat, l'ordinateur gagne
             }
             if (this->joueur == 2)
             {
-                return MAX;
+                return MAX; //Si l'ordinateur est mis en echec et mat, le joueur gagne
             }
 
-    } else if (this->test_match_nul()==true)
-    {
-        return 0;
+//    } else if (this->test_match_nul()==true)
+//    {
+//        return 0;
     } else
     {
         for(int i = 0; i<64;i++)
@@ -331,8 +354,79 @@ bool interieur_plateau(int i,int j)
 }
 
 
-bool Position_Echec::test_echec(){
+bool Position_Echec::test_echec(){ //Permet de tester si une position est echec ou pas pour le joueur de la position
     PieceColor turn = couleur_joueur; // Recuperer la couleur du joueur
+    //cout << turn << endl;
+    int m; // Pour les deplacements relatifs non limités
+    //echiquier echiquier_final = construction_echiquier(*this); // Construire echiquier
+   // (*this).mise_a_jour_position();
+    int pos_x_roi=0;
+    int pos_y_roi=0;
+    vector<vector<int>> Dep;
+    for (int i = 0; i<64; i++){ // Récupérer la position du Roi du joueur
+        if ((echiquier_ref.plateau[i]!= nullptr) && (echiquier_ref.plateau[i]->P.Nom_piece == Roi) && (echiquier_ref.plateau[i]->Couleur == turn)){ //&& (echiquier_d.plateau[i]!= nullptr)){
+
+            pos_x_roi = (*echiquier_ref.plateau[i]).x;
+            pos_y_roi = (*echiquier_ref.plateau[i]).y;
+            }
+
+
+    }
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 8; j++) {
+                if (((echiquier_ref.plateau[8*i+j])!=nullptr) &&
+                    (echiquier_ref.plateau[8*i+j]->Couleur != turn)) {// Rechercher les pieces adverses sur le plateau
+                        piece* Pad= echiquier_ref.plateau[8*i+j]; // Récupérer la piece adverse
+                     //   cout << (*Pad).string_type() <<endl;
+                        Dep= (Pad->P).Dep_rel; // Dep relatif du type de la piece
+                        //cout << Dep[0][0] << endl;
+                        if ((Pad->P).Nom_piece!= Pion ){    // Si c'est pas un pion pas besoin de savoir s'il a bougé ou pas
+                            for(int l = 0; l<int(Dep[1].size()); l++){
+                                if (int(Dep[2][l]) == 1){
+                                    if ( (i + Dep[0][l]== pos_x_roi) && (j + Dep[1][l]== pos_y_roi) ){
+                                        return true;
+                                    }}
+                                if (Dep[2][l] == 0){
+                                    m=1;
+                                    if ( (i + (m)*Dep[0][l]== pos_x_roi) && (j + (m)*Dep[1][l]== pos_y_roi) ){
+                                            return true;
+                                        }
+                                    while (  (interieur_plateau(i + m*Dep[0][l],  j + m*Dep[1][l])) && (echiquier_ref.plateau[8*(i + m*Dep[0][l]) + j + m*Dep[1][l]]== nullptr) && (m<7)){
+                                        if ( (i + (m+1)*Dep[0][l]== pos_x_roi) && (j + (m+1)*Dep[1][l]== pos_y_roi) ){
+                                            return true;
+                                        }
+                                    m=m+1;
+                                    }
+                                }
+                            }
+                        }
+                        else { // Sinon si c'est un pion
+                            for(int l = 1 ; l<int(Dep[1].size() -1); l++){ // Toutes les possibilités du Dep relatif diag
+                                if ( (i + Dep[0][l]== pos_x_roi) && (j + Dep[1][l]== pos_y_roi) && (Pad->Couleur==Blanc) ){
+                                    return true;
+                                }
+                                else if ( (i - Dep[0][l]== pos_x_roi) && (j + Dep[1][l]== pos_y_roi) && (Pad->Couleur ==Noir) ){
+                                    return true;
+                                }
+
+                            }
+                        }
+                   }
+            }
+        }
+        return false;
+}
+
+bool Position_Echec::test_echec2(){ //Permet de tester si une position est echec ou pas pour le joueur de la position
+    PieceColor turn;
+    if (couleur_joueur == Blanc)
+    {
+        turn = Noir;
+    }
+    else
+    {
+        turn = Blanc;
+    }
     //cout << turn << endl;
     int m; // Pour les deplacements relatifs non limités
     //echiquier echiquier_final = construction_echiquier(*this); // Construire echiquier
@@ -399,7 +493,8 @@ bool Position_Echec::test_echec(){
 
 
 
-bool Position_Echec::test_echec_mat(){
+
+bool Position_Echec::test_echec_mat(){ //Teste si une position est echec et mat
     if ((*this).test_echec() == false){
         return false;
     }
@@ -479,6 +574,57 @@ echiquier echiquier_depart(){
         piece* temp_P= new piece(Pion,Noir,6,i);
         E.plateau[6*8+i] = temp_P;
     }
+    return E;
+}
+
+echiquier echiquier_test_pion(){ //Echiquier pour voir si le pion mange un autre pion quand il le peut
+    echiquier E;
+    piece* P_0 = new piece(Tour,Blanc,0,0);
+    E.plateau[0]= P_0;
+    piece* P_1 = new piece(Cavalier,Blanc,0,1);
+    E.plateau[1]= P_1;
+    piece* P_2= new piece(Fou,Blanc,0,2);
+    E.plateau[2]= P_2;
+    piece* P_3= new piece(Dame,Blanc,0,3);
+    E.plateau[3]= P_3;
+    piece* P_4= new piece(Roi,Blanc,0,4);
+    E.plateau[4]= P_4;
+    piece* P_5= new piece(Fou,Blanc,0,5);
+    E.plateau[5]= P_5;
+    piece* P_6= new piece(Cavalier,Blanc,0,6);
+    E.plateau[6]= P_6;
+    piece* P_7= new piece(Tour,Blanc,0,7);
+    E.plateau[7]= P_7;
+    for (int i = 0; i<=7; i++){
+        piece* temp_P= new piece(Pion,Blanc,1,i);
+        E.plateau[8+i] = temp_P;
+    }
+    E.plateau[8*4 + 6] = E.plateau[8 + 7];
+    E.plateau[8 + 7] = nullptr;
+//    piece* temp_P = new piece(Pion,Blanc, 5,6);
+//    E.plateau[5*8+6] = temp_P;
+    piece* P_56 = new piece(Tour,Noir,7,0);
+    E.plateau[56]= P_56;
+    piece* P_57 = new piece(Cavalier,Noir,7,1);
+    E.plateau[57]= P_57;
+    piece* P_58 = new piece(Fou,Noir,7,2);
+    E.plateau[58]= P_58;
+    piece* P_59= new piece(Roi,Noir,7,3);
+    E.plateau[59]= P_59;
+    piece* P_60= new piece(Dame,Noir,7,4);
+    E.plateau[60]= P_60;
+    piece* P_61= new piece(Fou,Noir,7,5);
+    E.plateau[61]= P_61;
+    piece* P_62= new piece(Cavalier,Noir,7,6);
+    E.plateau[8*7+6]= P_62;
+    piece* P_63= new piece(Tour,Noir,7,7);
+    E.plateau[63]= P_63;
+    for (int i = 0; i<=6; i++){
+        piece* temp_P= new piece(Pion,Noir,6,i);
+        E.plateau[6*8+i] = temp_P;
+    }
+    E.plateau[5*8 + 7] = E.plateau[6*8 + 6];
+    E.plateau[6*8 + 6] = nullptr;
     return E;
 }
 
@@ -671,15 +817,15 @@ echiquier echiquier_test_echec(){
     return E;
 }
 
-echiquier echiquier_test_echec_mat()
+echiquier echiquier_test_echec_mat()//Echiquier test pour l'echec et mat
 {
     echiquier E;
 
     piece* P_4= new piece(Roi,Blanc,0,7);
     E.plateau[7]= P_4;
 
-    piece* P_59= new piece(Dame,Noir,7,5);
-    E.plateau[61]= P_59;
+    piece* P_59= new piece(Dame,Noir,7,7);
+    E.plateau[63]= P_59;
     piece* P_9= new piece(Tour,Noir,5,6);
     E.plateau[46]= P_9;
 
@@ -691,10 +837,10 @@ echiquier echiquier_test_echec_mat()
 echiquier echiquier_piece()
 {
     echiquier E;
-    piece* dame = new piece(Roi,Blanc,4,0);
-    piece* pion = new piece(Pion ,Blanc, 4,1);
-    E.plateau[36] = dame;
-    E.plateau[37] = pion;
+    piece* roi = new piece(Roi,Blanc,4,4);
+    piece* dame = new piece(Dame ,Noir, 4,2);
+    E.plateau[36] = roi;
+    E.plateau[34] = dame;
     return E;
 }
 
@@ -705,6 +851,11 @@ int minimax(Position &P, int alpha, int beta, int depth)
 //    cout<<"         debut           "<<endl;
 //    cout<<"         ======          "<<endl;
 //    P.print_position();
+    int c = P.valeur_position();
+    if ( c == MIN || c == MAX)
+    {
+        return c;
+    }
     P.position_possible();
     Position* pFilles= P.fille;
     int a = alpha;
@@ -713,7 +864,7 @@ int minimax(Position &P, int alpha, int beta, int depth)
 //	 leaf node is reached
 	if ( pFilles == nullptr || depth == 0) {
 //        cout<<"Valeur de la position finale "<<a<<endl;
-		return P.valeur_position();
+		return c;
 	}
     if (P.joueur == 1)
     {
@@ -721,7 +872,7 @@ int minimax(Position &P, int alpha, int beta, int depth)
 
 //        First child
 //        pP=P.fille;
-
+        pFilles->joueur = 2;
         int val = minimax(*pFilles, a, b, depth-1);
         best = max(best, val);
 //          Recur for her sisters
@@ -747,6 +898,7 @@ int minimax(Position &P, int alpha, int beta, int depth)
 
 //          first child
 //        pP=P.fille;
+        pFilles->joueur = 1;
         int val = minimax(*pFilles, a, b, depth-1);
         best = min(best, val);
           //Recur for her sisters
@@ -1064,7 +1216,7 @@ Position_Echec& Position_Echec::position_possible()
                             int k = 1;
                             int x = i + k*Dep[0][l];
                             int y = j + k*Dep[1][l];
-                            while (interieur_plateau(i + k*Dep[0][l],j + k*Dep[1][l]) && presence == false && k<8)
+                            while (interieur_plateau(i + k*Dep[0][l],j + k*Dep[1][l]) && presence == false)
                             {
                                 piece* actuel = echiquier_ref.plateau[8*(i + k*Dep[0][l]) + j + k*Dep[1][l]];
                                 if (actuel == nullptr) //Si la case est vide
@@ -1090,10 +1242,12 @@ Position_Echec& Position_Echec::position_possible()
                                     Position_Echec* nouvelle_soeur = new Position_Echec;
                                     nouvelle_soeur->couleur_joueur = turn;
                                     nouvelle_soeur->Liste_coup = Liste_coup;
+                                    nouvelle_soeur->echiquier_ref = echiquier_ref;
                                     nouvelle_soeur->Liste_coup.push_back(C); //Grace au coup echec qu'on a enregistré
                                     nouvelle_soeur->soeur = this->fille;
                                     this->fille = nouvelle_soeur;
                                     ++k;
+                                    presence = true;
                                 }
                                 else if (actuel->Couleur == turn || actuel->P.Nom_piece==Roi)
                                 {
@@ -1207,6 +1361,7 @@ Position_Echec& Position_Echec::position_possible()
                                     //On crée la nouvelle soeur et on change la couleur
                                     Position_Echec* nouvelle_soeur = new Position_Echec;
                                     nouvelle_soeur->couleur_joueur = turn;
+                                    nouvelle_soeur->echiquier_ref = echiquier_ref;
                                     nouvelle_soeur->Liste_coup = Liste_coup;
                                     nouvelle_soeur->Liste_coup.push_back(C); //Grace au coup echec qu'on a enregistré
                                     nouvelle_soeur->soeur = this->fille;
@@ -1599,7 +1754,7 @@ Position_Echec& Position_Echec::position_possible()
                                 nouvelle_soeur->Liste_coup.push_back(C);
                                 Position_Echec* T = nouvelle_soeur;
                                 T->mise_a_jour_position();
-                                if (!T->test_echec())
+                                if (!T->test_echec2())
                                 {
                                     nouvelle_soeur->soeur = this->fille;
                                     this->fille = nouvelle_soeur;
@@ -1615,7 +1770,7 @@ Position_Echec& Position_Echec::position_possible()
                                 nouvelle_soeur->Liste_coup.push_back(C);
                                 Position_Echec* T = nouvelle_soeur;
                                 T->mise_a_jour_position();
-                                if (!T->test_echec())
+                                if (!T->test_echec2())
                                 {
                                     nouvelle_soeur->soeur = this->fille;
                                     this->fille = nouvelle_soeur;
