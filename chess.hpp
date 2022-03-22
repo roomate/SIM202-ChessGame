@@ -154,6 +154,10 @@ public:
         P = p.P;
         a_bouger = p.a_bouger;
     }
+    piece()
+    {
+
+    }
 
 
 
@@ -271,12 +275,10 @@ public:
     bool echec_mat = false;
     void affichage_standard();
 
-    coup_echec(){
-        if (PJ != nullptr)
-        {
-            delete PJ;
-        }
-        if (Pprise != nullptr){delete Pprise;}
+
+    coup_echec()
+    {
+
     }
 
     coup_echec(const coup_echec &c){
@@ -451,31 +453,29 @@ public:
         Position_Echec* pfille = dynamic_cast<Position_Echec*>(fille);
         while (pfille != nullptr)
         {
-            Position_Echec* next = dynamic_cast<Position_Echec*>(pfille->soeur);
+//            Position_Echec* next = dynamic_cast<Position_Echec*>(pfille->soeur);
             if (pfille != P)
             {
                 pfille->libere_fille(P);
                 delete pfille;
             }
-            pfille = next;
         }
     }
+
 
     Position_Echec(){
         //Liste_coup = new coup_echec[10];
     }
-//    ~Position_Echec()
-//    {
-//        delete Liste_coup;
-//        if (fille != nullptr)
-//        {
-//            delete fille;
-//        }
-//        if (soeur != nullptr)
-//        {
-//            delete soeur;
-//        }
-//    }
+    ~Position_Echec()
+    {
+    if (fille != nullptr)
+    {
+        delete fille;
+    }
+    if (soeur !=nullptr){
+        delete soeur;
+    }
+    }
 
     Position_Echec& position_possible();
     double valeur_position() const {return 0;} //a def
